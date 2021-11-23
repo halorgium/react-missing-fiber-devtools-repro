@@ -3,8 +3,6 @@ import './App.css';
 import { Stage, Layer, Group, Rect, Text } from 'react-konva';
 import Konva from 'konva';
 
-import pieces from './pieces'
-
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -85,14 +83,19 @@ function rotate(coords, rotation) {
   }))
 }
 
-function Piece({ coords, size = 50, margin = 10, fill, position, moveToFront, reportPosition, reportTiles }) {
+function Piece({ coords, size = 50, margin = 10, fill, position, rotation: newRotation, moveToFront, reportRotation, reportPosition, reportTiles }) {
   const group = useRef(null)
   const [rotation, setRotation] = useState(0)
   const [tiles, setTiles] = useState(rotate(coords, rotation))
   const click = useCallback(() => {
+    reportRotation()
     setRotation(r => (r + 1) % 4)
     moveToFront()
   }, [])
+
+  if (rotation !== newRotation) {
+    console.error(`mismatching rotation: ${rotation} != ${newRotation}`)
+  }
 
   const dragStart = useCallback(() => {
     moveToFront()
@@ -111,7 +114,7 @@ function Piece({ coords, size = 50, margin = 10, fill, position, moveToFront, re
     const newTiles = rotate(coords, rotation)
     setTiles(newTiles)
     reportTiles(newTiles)
-  }, [rotation, reportTiles])
+  }, [rotation])
 
   return (
     <Group ref={group} x={position.x * (size + margin)} y={position.y * (size + margin)} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable>
@@ -146,7 +149,7 @@ function buildBoardHits({ width, height }) {
   return xMap
 }
 
-function detectHits({ width, height, size, margin, piecePositions, pieceTiles }) {
+function detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions, pieceTiles }) {
   const accuracy = 0.1
   const hits = buildBoardHits({ width, height })
 
@@ -155,6 +158,8 @@ function detectHits({ width, height, size, margin, piecePositions, pieceTiles })
   const grid = size + margin
   for (let [k, piece] of pieces) {
     lines.push(`>>> ${k}`)
+    const rotation = pieceRotations.get(k)
+    lines.push(`r = ${rotation}`)
     const position = piecePositions.get(k)
     lines.push(`x = ${position.x}, y = ${position.y}`)
     const gx = position.x / grid
@@ -235,7 +240,7 @@ function Board({ hits = null, width, height, size, margin, border = 5 }) {
   })
 }
 
-function App() {
+function App({ pieces }) {
   const size = 30
   const margin = 15
   const width = 5
@@ -277,6 +282,18 @@ function App() {
     return map
   })
 
+  const [pieceRotations, setPieceRotations] = useState(() => {
+    const map = new Map()
+    map.set('initial', true)
+    map.set('debug', 0)
+    for (let [k, p] of pieces.entries()) {
+      console.log(`initial rotation for ${k}`)
+      map.set(k, 0)
+    }
+    console.log(`initial rotations = ${JSON.stringify(Array.from(map))}`)
+    return map
+  })
+
   const moveToFront = useCallback(n => {
     console.log({ moveToFront: n })
     setPieceOrder(m => {
@@ -290,41 +307,39 @@ function App() {
     })
   }, [])
 
+  const reportRotation = useCallback((n) => {
+    setPieceRotations(old => {
+      const map = new Map(old)
+      map.set('debug', map.get('debug') + 1)
+      map.set(n, (map.get(n) + 1) % 4)
+      console.log(`interim rotations = ${JSON.stringify(Array.from(map))}`)
+      return map
+    })
+  }, [pieceRotations])
+
   const reportPosition = useCallback((n, coord) => {
     const current = piecePositions.get(n)
     if (current.x !== coord.x || current.y !== coord.y) {
-      const map = new Map()
-      for (let [k, c] of piecePositions.entries()) {
-        if (k === n) {
-          if (k === "red") console.log("updating red pos")
-          map.set(k, coord)
-        }
-        else {
-          if (k === "red") console.log(`maintaining red pos: ${JSON.stringify(c)}`)
-          map.set(k, c)
-        }
-      }
-      setPiecePositions(map)
+      setPiecePositions(old => {
+        const map = new Map(old)
+        map.set(n, coord)
+        return map
+      })
     }
   }, [])
 
   const reportTiles = useCallback((n, tiles) => {
-    const map = new Map()
-    for (let [k, t] of pieceTiles.entries()) {
-      if (k === n) {
-        map.set(k, tiles)
-      }
-      else {
-        map.set(k, t)
-      }
-    }
-    // setPieceTiles(map)
+    setPieceTiles(old => {
+      const map = new Map(old)
+      map.set(n, tiles)
+      return map
+    })
   }, [])
 
   const [statusReport, setStatusReport] = useState([])
 
   useEffect(() => {
-    const [hits, lines] = detectHits({ width, height, size, margin, pieces, piecePositions, pieceTiles })
+    const [hits, lines] = detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions, pieceTiles })
 
     setBoardHits(hits)
     // console.log({ hits })
@@ -347,9 +362,12 @@ function App() {
             <Group>
               {orderedPieces.map(([i, k]) => {
                 const piece = pieces.get(k)
+                const rotation = pieceRotations.get(k)
                 return <Piece
                   key={k} size={size} margin={margin} {...piece}
+                  rotation={rotation}
                   moveToFront={() => moveToFront(k)}
+                  reportRotation={() => reportRotation(k)}
                   reportPosition={coord => reportPosition(k, coord)}
                   reportTiles={tiles => reportTiles(k, tiles)}
                 />
