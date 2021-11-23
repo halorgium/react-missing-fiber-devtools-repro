@@ -228,7 +228,7 @@ function Board({ hits = null, width, height, size, margin, border = 5 }) {
   return board.map(({ key, x, y, size, fill, hit }) => {
     return (
       <Group key={key} x={x} y={y}>
-        <Tile size={size} fill={fill} />
+        <Tile key={key} size={size} fill={fill} />
         {hit && <Text text={hit.count} />}
       </Group>
     )
@@ -318,7 +318,7 @@ function App() {
         map.set(k, t)
       }
     }
-    setPieceTiles(map)
+    // setPieceTiles(map)
   }, [])
 
   const [statusReport, setStatusReport] = useState([])
@@ -329,7 +329,7 @@ function App() {
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter, piecePositions, pieceTiles])
+  }, [counter]) //, piecePositions, pieceTiles])
 
   const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
   // console.log({ orderedPieces })
@@ -364,19 +364,6 @@ function App() {
           </Group>
         </Layer>
       </ErrorBoundary>
-    </Stage>
-  )
-}
-
-function App2() {
-  return (
-    <Stage width={window.innerWidth} height={window.innerHeight}>
-      <Layer>
-        <Group x={300} y={40}>
-          <Rect width={100} height={40} fill='grey' />
-          <Text text='foo' />
-        </Group>
-      </Layer>
     </Stage>
   )
 }
