@@ -240,7 +240,7 @@ function Board({ hits = null, width, height, size, margin, border = 5 }) {
   })
 }
 
-function App({ pieces }) {
+function App({ initialPieces }) {
   const size = 30
   const margin = 15
   const width = 5
@@ -256,15 +256,15 @@ function App({ pieces }) {
   const [pieceOrder, setPieceOrder] = useState(() => {
     const map = new Map()
     let i = 0
-    for (let k of pieces.keys()) {
+    for (let k of initialPieces.keys()) {
       map.set(i++, k)
     }
     return map
   })
 
-  const [pieceDetails, setPieceDetails] = useState(() => {
+  const [pieces, setPieces] = useState(() => {
     const map = new Map()
-    for (let [k, p] of pieces.entries()) {
+    for (let [k, p] of initialPieces.entries()) {
       map.set(k, {
         fill: p.fill,
         tiles: p.tiles,
@@ -291,43 +291,43 @@ function App({ pieces }) {
   }, [])
 
   const reportRotation = useCallback((n) => {
-    setPieceDetails(old => {
+    setPieces(old => {
       const map = new Map(old)
       const current = map.get(n)
-      const details = {
+      const piece = {
         ...current,
         rotation: (current.rotation + 1) % 4,
       }
-      map.set(n, details)
+      map.set(n, piece)
       return map
     })
-  }, [pieceDetails])
+  }, [pieces])
 
-  const reportPosition = useCallback((n, coord) => {
-    const details = pieceDetails.get(n)
-    if (details.position.x !== coord.x || details.position.y !== coord.y) {
-      setPieceDetails(old => {
+  const reportPosition = useCallback((n, position) => {
+    const current = pieces.get(n)
+    if (current.position.x !== position.x || current.position.y !== position.y) {
+      setPieces(old => {
         const map = new Map(old)
         const current = old.get(n)
-        const details = {
+        const piece = {
           ...current,
-          position: coord,
+          position: position,
         }
-        map.set(n, details)
+        map.set(n, piece)
         return map
       })
     }
-  }, [pieceDetails])
+  }, [pieces])
 
   const [statusReport, setStatusReport] = useState([])
 
   useEffect(() => {
-    const [hits, lines] = detectHits({ width, height, size, margin, pieces: pieceDetails })
+    const [hits, lines] = detectHits({ width, height, size, margin, pieces })
 
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter, pieceDetails])
+  }, [counter, pieces])
 
   const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
   // console.log({ orderedPieces })
@@ -344,7 +344,7 @@ function App({ pieces }) {
             <Board width={width} height={height} size={size} margin={margin} />
             <Group>
               {orderedPieces.map(([i, k]) => {
-                const piece = pieceDetails.get(k)
+                const piece = pieces.get(k)
                 const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
                 return <Piece
                   key={k}
