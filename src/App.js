@@ -53,11 +53,12 @@ function normalize(coords) {
     if (y < minY) minY = y
   })
 
-  return coords.map(({ key, x, y }) => {
+  return coords.map(coord => {
     return {
-      key,
-      x: x - minX,
-      y: y - minY,
+      key: coord.key,
+      ...coord,
+      x: coord.x - minX,
+      y: coord.y - minY,
     }
   })
 }
@@ -87,7 +88,12 @@ function rotate(coords, rotation) {
 
     const [x, y] = transform(coord)
 
-    return { key, x, y }
+    return {
+      key,
+      ...coord,
+      x,
+      y
+    }
   }))
 }
 
@@ -144,7 +150,7 @@ function buildBoardHits({ width, height }) {
   return xMap
 }
 
-function detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions }) {
+function detectHits({ width, height, size, margin, pieces }) {
   const accuracy = 0.1
   const hits = buildBoardHits({ width, height })
 
@@ -153,9 +159,8 @@ function detectHits({ width, height, size, margin, pieces, pieceRotations, piece
   const grid = size + margin
   for (let [k, piece] of pieces) {
     lines.push(`>>> ${k}`)
-    const rotation = pieceRotations.get(k)
+    const {rotation, position} = piece
     lines.push(`r = ${rotation}`)
-    const position = piecePositions.get(k)
     lines.push(`x = ${position.x}, y = ${position.y}`)
     const gx = position.x / grid
     const gy = position.y / grid
@@ -176,7 +181,7 @@ function detectHits({ width, height, size, margin, pieces, pieceRotations, piece
 
     if (closeX && closeY) {
       lines.push("fully aligned")
-      const tiles = rotate(piece.coords, rotation)
+      const tiles = rotate(piece.tiles, rotation)
       for (let tile of tiles) {
         const ax = x + tile.x
         const ay = y + tile.y
@@ -257,35 +262,19 @@ function App({ pieces }) {
     return map
   })
 
-  const [piecePositions, setPiecePositions] = useState(() => {
-    console.log("recomputing positions")
+  const [pieceDetails, setPieceDetails] = useState(() => {
     const map = new Map()
     for (let [k, p] of pieces.entries()) {
       map.set(k, {
-        x: p.position.x * (size + margin),
-        y: p.position.y * (size + margin),
+        fill: p.fill,
+        tiles: p.tiles,
+        position: {
+          x: p.position.x * (size + margin),
+          y: p.position.y * (size + margin),
+        },
+        rotation: 0,
       })
     }
-    return map
-  })
-
-  const [pieceTiles, setPieceTiles] = useState(() => {
-    const map = new Map()
-    for (let [k, p] of pieces.entries()) {
-      map.set(k, p.coords)
-    }
-    return map
-  })
-
-  const [pieceRotations, setPieceRotations] = useState(() => {
-    const map = new Map()
-    map.set('initial', true)
-    map.set('debug', 0)
-    for (let [k, p] of pieces.entries()) {
-      console.log(`initial rotation for ${k}`)
-      map.set(k, 0)
-    }
-    console.log(`initial rotations = ${JSON.stringify(Array.from(map))}`)
     return map
   })
 
@@ -297,41 +286,48 @@ function App({ pieces }) {
         if (k !== n) m.set(j++, k)
       }
       m.set(j++, n)
-      console.log({ pieceOrder: m })
       return m
     })
   }, [])
 
   const reportRotation = useCallback((n) => {
-    setPieceRotations(old => {
+    setPieceDetails(old => {
       const map = new Map(old)
-      map.set('debug', map.get('debug') + 1)
-      map.set(n, (map.get(n) + 1) % 4)
-      console.log(`interim rotations = ${JSON.stringify(Array.from(map))}`)
+      const current = map.get(n)
+      const details = {
+        ...current,
+        rotation: (current.rotation + 1) % 4,
+      }
+      map.set(n, details)
       return map
     })
-  }, [pieceRotations])
+  }, [pieceDetails])
 
   const reportPosition = useCallback((n, coord) => {
-    const current = piecePositions.get(n)
-    if (current.x !== coord.x || current.y !== coord.y) {
-      setPiecePositions(old => {
+    const details = pieceDetails.get(n)
+    if (details.position.x !== coord.x || details.position.y !== coord.y) {
+      setPieceDetails(old => {
         const map = new Map(old)
-        map.set(n, coord)
+        const current = old.get(n)
+        const details = {
+          ...current,
+          position: coord,
+        }
+        map.set(n, details)
         return map
       })
     }
-  }, [])
+  }, [pieceDetails])
 
   const [statusReport, setStatusReport] = useState([])
 
   useEffect(() => {
-    const [hits, lines] = detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions })
+    const [hits, lines] = detectHits({ width, height, size, margin, pieces: pieceDetails })
 
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter, piecePositions, pieceRotations])
+  }, [counter, pieceDetails])
 
   const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
   // console.log({ orderedPieces })
@@ -348,15 +344,14 @@ function App({ pieces }) {
             <Board width={width} height={height} size={size} margin={margin} />
             <Group>
               {orderedPieces.map(([i, k]) => {
-                const piece = pieces.get(k)
-                const rotation = pieceRotations.get(k)
-                const position = scale(piece.position, { size, margin })
-                const tiles = rotate(piece.coords, rotation).map(coord => scale(coord, { size, margin }))
+                const piece = pieceDetails.get(k)
+                const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
                 return <Piece
-                  key={k} size={size}
-                  tiles={tiles} fill={piece.fill}
-                  position={position}
-                  rotation={rotation}
+                  key={k}
+                  size={size}
+                  tiles={tiles}
+                  fill={piece.fill}
+                  position={piece.position}
                   moveToFront={() => moveToFront(k)}
                   reportRotation={() => reportRotation(k)}
                   reportPosition={coord => reportPosition(k, coord)}

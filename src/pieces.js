@@ -4,7 +4,7 @@ pieces.set('red', {
     x: 0,
     y: 0,
   },
-  coords: [
+  tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
     { x: 0, y: 2 },
@@ -17,7 +17,7 @@ pieces.set('green', {
     x: 1,
     y: 0,
   },
-  coords: [
+  tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
     { x: 1, y: 0 },
@@ -31,7 +31,7 @@ pieces.set('yellow', {
     x: 3,
     y: 0,
   },
-    coords: [
+    tiles: [
     { x: 1, y: 0 },
     { x: 0, y: 1 },
     { x: 1, y: 1 },
@@ -44,7 +44,7 @@ pieces.set('orange', {
     x: 0,
     y: 3,
   },
-  coords: [
+  tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
     { x: 1, y: 1 },
@@ -56,7 +56,7 @@ pieces.set('blue', {
     x: 1,
     y: 3,
   },
-  coords: [
+  tiles: [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
     { x: 1, y: 1 },
@@ -69,7 +69,7 @@ pieces.set('pink', {
     x: 2,
     y: 2,
   },
-  coords: [
+  tiles: [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
     { x: 1, y: 1 },
