@@ -351,10 +351,9 @@ function App({ pieces }) {
                 const piece = pieces.get(k)
                 const rotation = pieceRotations.get(k)
                 const position = scale(piece.position, { size, margin })
-                console.log({position})
                 const tiles = rotate(piece.coords, rotation).map(coord => scale(coord, { size, margin }))
                 return <Piece
-                  key={k} size={size} margin={margin}
+                  key={k} size={size}
                   tiles={tiles} fill={piece.fill}
                   position={position}
                   rotation={rotation}
