@@ -331,7 +331,7 @@ function App({ pieces }) {
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter]) //, piecePositions])
+  }, [counter, piecePositions, pieceRotations])
 
   const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
   // console.log({ orderedPieces })
