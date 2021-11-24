@@ -62,6 +62,14 @@ function normalize(coords) {
   })
 }
 
+function scale(coord, { size, margin }) {
+return {
+    ...coord,
+    x: coord.x * (size + margin),
+    y: coord.y * (size + margin),
+  }
+}
+
 function rotate(coords, rotation) {
   const swap = swapMatrix[rotation]
   const [scaleX, scaleY] = scaleMatrix[rotation]
@@ -83,19 +91,12 @@ function rotate(coords, rotation) {
   }))
 }
 
-function Piece({ coords, size = 50, margin = 10, fill, position, rotation: newRotation, moveToFront, reportRotation, reportPosition, reportTiles }) {
+function Piece({ tiles, size = 50, fill, position, moveToFront, reportRotation, reportPosition }) {
   const group = useRef(null)
-  const [rotation, setRotation] = useState(0)
-  const [tiles, setTiles] = useState(rotate(coords, rotation))
   const click = useCallback(() => {
     reportRotation()
-    setRotation(r => (r + 1) % 4)
     moveToFront()
   }, [])
-
-  if (rotation !== newRotation) {
-    console.error(`mismatching rotation: ${rotation} != ${newRotation}`)
-  }
 
   const dragStart = useCallback(() => {
     moveToFront()
@@ -110,15 +111,9 @@ function Piece({ coords, size = 50, margin = 10, fill, position, rotation: newRo
 
   }, [])
 
-  useEffect(() => {
-    const newTiles = rotate(coords, rotation)
-    setTiles(newTiles)
-    reportTiles(newTiles)
-  }, [rotation])
-
   return (
-    <Group ref={group} x={position.x * (size + margin)} y={position.y * (size + margin)} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable>
-      {tiles.map(({ key, x, y }) => <Tile key={key} x={x * (size + margin)} y={y * (size + margin)} size={size} fill={fill} />)}
+    <Group ref={group} x={position.x} y={position.y} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable>
+      {tiles.map(({ key, x, y }) => <Tile key={key} x={x} y={y} size={size} fill={fill} />)}
     </Group>
   )
 }
@@ -149,7 +144,7 @@ function buildBoardHits({ width, height }) {
   return xMap
 }
 
-function detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions, pieceTiles }) {
+function detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions }) {
   const accuracy = 0.1
   const hits = buildBoardHits({ width, height })
 
@@ -181,7 +176,7 @@ function detectHits({ width, height, size, margin, pieces, pieceRotations, piece
 
     if (closeX && closeY) {
       lines.push("fully aligned")
-      const tiles = pieceTiles.get(k)
+      const tiles = rotate(piece.coords, rotation)
       for (let tile of tiles) {
         const ax = x + tile.x
         const ay = y + tile.y
@@ -328,23 +323,15 @@ function App({ pieces }) {
     }
   }, [])
 
-  const reportTiles = useCallback((n, tiles) => {
-    setPieceTiles(old => {
-      const map = new Map(old)
-      map.set(n, tiles)
-      return map
-    })
-  }, [])
-
   const [statusReport, setStatusReport] = useState([])
 
   useEffect(() => {
-    const [hits, lines] = detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions, pieceTiles })
+    const [hits, lines] = detectHits({ width, height, size, margin, pieces, pieceRotations, piecePositions })
 
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter]) //, piecePositions, pieceTiles])
+  }, [counter]) //, piecePositions])
 
   const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
   // console.log({ orderedPieces })
@@ -363,13 +350,17 @@ function App({ pieces }) {
               {orderedPieces.map(([i, k]) => {
                 const piece = pieces.get(k)
                 const rotation = pieceRotations.get(k)
+                const position = scale(piece.position, { size, margin })
+                console.log({position})
+                const tiles = rotate(piece.coords, rotation).map(coord => scale(coord, { size, margin }))
                 return <Piece
-                  key={k} size={size} margin={margin} {...piece}
+                  key={k} size={size} margin={margin}
+                  tiles={tiles} fill={piece.fill}
+                  position={position}
                   rotation={rotation}
                   moveToFront={() => moveToFront(k)}
                   reportRotation={() => reportRotation(k)}
                   reportPosition={coord => reportPosition(k, coord)}
-                  reportTiles={tiles => reportTiles(k, tiles)}
                 />
               })}
             </Group>
