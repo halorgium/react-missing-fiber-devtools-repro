@@ -57,28 +57,28 @@ pieces.set('pink', {
 
 const unsolved = new Map()
 unsolved.set('red', {
-  x: 6,
-  y: 2,
+  x: -2,
+  y: 0,
 })
 unsolved.set('green', {
-  x: 4,
-  y: 6,
+  x: -2,
+  y: -2,
 })
 unsolved.set('yellow', {
-  x: 8,
+  x: 4,
   y: 5,
 })
 unsolved.set('orange', {
   x: 5,
-  y: 8,
-})
-unsolved.set('blue', {
-  x: 7,
   y: 2,
 })
+unsolved.set('blue', {
+  x: -2,
+  y: 5,
+})
 unsolved.set('pink', {
-  x: 6,
-  y: 7,
+  x: 4,
+  y: -2,
 })
 
 const online = new Map()
@@ -106,7 +106,6 @@ online.set('pink', {
   x: 2,
   y: 2,
 })
-
 
 const positions = {
   online,

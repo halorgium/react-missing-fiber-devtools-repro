@@ -232,7 +232,7 @@ function App({ initialPieces, initialPositions }) {
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Group x={40} y={40}>
+        <Group x={130} y={130}>
           <Board width={width} height={height} size={size} margin={margin}>
             <Group>
               {orderedPieces.map(([k, p]) => {
@@ -252,11 +252,11 @@ function App({ initialPieces, initialPositions }) {
             </Group>
           </Board>
         </Group>
-        <Group x={40} y={350}>
-          <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
-        </Group>
         <Group x={500} y={40}>
           <Debug increment={increment} counter={counter} statusReport={statusReport} />
+          <Group y={250}>
+            <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
+          </Group>
         </Group>
       </Layer>
     </Stage>
