@@ -1,36 +1,8 @@
 import { Component, useEffect, useState, useRef, useMemo, useCallback } from 'react'
-import './App.css';
-import { Stage, Layer, Group, Rect, Text } from 'react-konva';
-import Konva from 'konva';
+import './App.css'
+import { Stage, Layer, Group, Rect, Text } from 'react-konva'
 
 import Tile from './Tile'
-
-class ErrorBoundary extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error) {
-    // Update state so the next render will show the fallback UI.
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service
-    console.log({ error, errorInfo });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return <h1>Something went wrong.</h1>;
-    }
-
-    return this.props.children;
-  }
-}
-
 
 const swapMatrix = [
   false,
@@ -66,7 +38,7 @@ function normalize(coords) {
 }
 
 function scale(coord, { size, margin }) {
-return {
+  return {
     ...coord,
     x: coord.x * (size + margin),
     y: coord.y * (size + margin),
@@ -147,7 +119,7 @@ function detectHits({ width, height, size, margin, pieces }) {
   const grid = size + margin
   for (let [k, piece] of pieces) {
     lines.push(`>>> ${k}`)
-    const {rotation, position} = piece
+    const { rotation, position } = piece
     // lines.push(`r = ${rotation}`)
     // lines.push(`x = ${position.x}, y = ${position.y}`)
     const gx = position.x / grid
@@ -323,39 +295,37 @@ function App({ initialPieces, initialPositions }) {
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
-      <ErrorBoundary>
-        <Layer>
-          <Group x={300} y={40}>
-            <Rect width={100} height={40} fill='grey' onClick={increment} />
-            <Text text={counter} />
+      <Layer>
+        <Group x={300} y={40}>
+          <Rect width={100} height={40} fill='grey' onClick={increment} />
+          <Text text={counter} />
+        </Group>
+        <Group x={40} y={40}>
+          <Board width={width} height={height} size={size} margin={margin} />
+          <Group>
+            {orderedPieces.map(([i, k]) => {
+              const piece = pieces.get(k)
+              const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
+              return <Piece
+                key={k}
+                size={size}
+                tiles={tiles}
+                fill={piece.fill}
+                position={piece.position}
+                moveToFront={() => moveToFront(k)}
+                reportRotation={() => reportRotation(k)}
+                reportPosition={coord => reportPosition(k, coord)}
+              />
+            })}
           </Group>
-          <Group x={40} y={40}>
-            <Board width={width} height={height} size={size} margin={margin} />
-            <Group>
-              {orderedPieces.map(([i, k]) => {
-                const piece = pieces.get(k)
-                const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
-                return <Piece
-                  key={k}
-                  size={size}
-                  tiles={tiles}
-                  fill={piece.fill}
-                  position={piece.position}
-                  moveToFront={() => moveToFront(k)}
-                  reportRotation={() => reportRotation(k)}
-                  reportPosition={coord => reportPosition(k, coord)}
-                />
-              })}
-            </Group>
-          </Group>
-          <Group x={500} y={40}>
-            <Text fontFamily='Courier' text={statusReport} />
-          </Group>
-          <Group x={40} y={350}>
-            <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
-          </Group>
-        </Layer>
-      </ErrorBoundary>
+        </Group>
+        <Group x={500} y={40}>
+          <Text fontFamily='Courier' text={statusReport} />
+        </Group>
+        <Group x={40} y={350}>
+          <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
+        </Group>
+      </Layer>
     </Stage>
   )
 }
