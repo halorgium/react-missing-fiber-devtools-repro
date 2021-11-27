@@ -1,9 +1,5 @@
 const pieces = new Map()
 pieces.set('red', {
-  position: {
-    x: 0,
-    y: 0,
-  },
   tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
@@ -13,10 +9,6 @@ pieces.set('red', {
   fill: '#DE453D'
 })
 pieces.set('green', {
-  position: {
-    x: 1,
-    y: 0,
-  },
   tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
@@ -27,11 +19,7 @@ pieces.set('green', {
   fill: '#B8F570'
 })
 pieces.set('yellow', {
-  position: {
-    x: 3,
-    y: 0,
-  },
-    tiles: [
+  tiles: [
     { x: 1, y: 0 },
     { x: 0, y: 1 },
     { x: 1, y: 1 },
@@ -40,10 +28,6 @@ pieces.set('yellow', {
   fill: 'yellow'
 })
 pieces.set('orange', {
-  position: {
-    x: 0,
-    y: 3,
-  },
   tiles: [
     { x: 0, y: 0 },
     { x: 0, y: 1 },
@@ -52,10 +36,6 @@ pieces.set('orange', {
   fill: 'orange'
 })
 pieces.set('blue', {
-  position: {
-    x: 1,
-    y: 3,
-  },
   tiles: [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
@@ -65,10 +45,6 @@ pieces.set('blue', {
   fill: 'blue'
 })
 pieces.set('pink', {
-  position: {
-    x: 2,
-    y: 2,
-  },
   tiles: [
     { x: 0, y: 0 },
     { x: 1, y: 0 },
@@ -79,4 +55,35 @@ pieces.set('pink', {
   fill: 'pink'
 })
 
+const online = new Map()
+online.set('red', {
+  x: 0,
+  y: 0,
+})
+online.set('green', {
+  x: 1,
+  y: 0,
+})
+online.set('yellow', {
+  x: 3,
+  y: 0,
+})
+online.set('orange', {
+  x: 0,
+  y: 3,
+})
+online.set('blue', {
+  x: 1,
+  y: 3,
+})
+online.set('pink', {
+  x: 2,
+  y: 2,
+})
+
+const positions = {
+  online
+}
+
+export { positions }
 export default pieces

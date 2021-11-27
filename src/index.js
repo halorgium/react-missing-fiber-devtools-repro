@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import pieces from './pieces'
+import pieces, { positions } from './pieces'
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App initialPieces={pieces} />
+    <App initialPieces={pieces} initialPositions={positions.online} />
   </React.StrictMode>,
   document.getElementById('root')
 );

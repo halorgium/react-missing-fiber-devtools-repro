@@ -240,7 +240,7 @@ function Board({ hits = null, width, height, size, margin, border = 5 }) {
   })
 }
 
-function App({ initialPieces }) {
+function App({ initialPieces, initialPositions }) {
   const size = 30
   const margin = 15
   const width = 5
@@ -265,12 +265,13 @@ function App({ initialPieces }) {
   const [pieces, setPieces] = useState(() => {
     const map = new Map()
     for (let [k, p] of initialPieces.entries()) {
+      const position = initialPositions.get(k)
       map.set(k, {
         fill: p.fill,
         tiles: p.tiles,
         position: {
-          x: p.position.x * (size + margin),
-          y: p.position.y * (size + margin),
+          x: position.x * (size + margin),
+          y: position.y * (size + margin),
         },
         rotation: 0,
       })
