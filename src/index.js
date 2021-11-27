@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App initialPieces={pieces} initialPositions={positions.online} />
+    <App initialPieces={pieces} initialPositions={positions.unsolved} />
   </React.StrictMode>,
   document.getElementById('root')
 );

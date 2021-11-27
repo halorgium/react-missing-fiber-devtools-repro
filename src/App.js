@@ -160,8 +160,8 @@ function detectHits({ width, height, size, margin, pieces }) {
   for (let [k, piece] of pieces) {
     lines.push(`>>> ${k}`)
     const {rotation, position} = piece
-    lines.push(`r = ${rotation}`)
-    lines.push(`x = ${position.x}, y = ${position.y}`)
+    // lines.push(`r = ${rotation}`)
+    // lines.push(`x = ${position.x}, y = ${position.y}`)
     const gx = position.x / grid
     const gy = position.y / grid
     // lines.push(`gx = ${gx}, gy = ${gy}`)
@@ -180,7 +180,7 @@ function detectHits({ width, height, size, margin, pieces }) {
     }
 
     if (closeX && closeY) {
-      lines.push("fully aligned")
+      lines.push(`fully aligned @ ${x}, ${y} (${rotation})`)
       const tiles = rotate(piece.tiles, rotation)
       for (let tile of tiles) {
         const ax = x + tile.x
