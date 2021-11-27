@@ -147,15 +147,7 @@ function App({ initialPieces, initialPositions }) {
 
   const [boardHits, setBoardHits] = useState(() => buildBoardHits({ width, height }))
 
-  const [pieceOrder, setPieceOrder] = useState(() => {
-    const map = new Map()
-    let i = 0
-    for (let k of initialPieces.keys()) {
-      map.set(i++, k)
-    }
-    return map
-  })
-
+  const [index, setIndex] = useState(0)
   const [pieces, setPieces] = useState(() => {
     const map = new Map()
     for (let [k, p] of initialPieces.entries()) {
@@ -168,6 +160,7 @@ function App({ initialPieces, initialPositions }) {
           y: position.y * (size + margin),
         },
         rotation: 0,
+        index: -1,
       })
     }
     return map
@@ -175,15 +168,24 @@ function App({ initialPieces, initialPositions }) {
 
   const moveToFront = useCallback(n => {
     console.log({ moveToFront: n })
-    setPieceOrder(m => {
-      let j = 0
-      for (let k of m.values()) {
-        if (k !== n) m.set(j++, k)
-      }
-      m.set(j++, n)
-      return m
-    })
-  }, [])
+
+    if (pieces.get(n).index !== index) {
+      setIndex(i => {
+        const newIndex = i + 1
+        setPieces(old => {
+          const map = new Map(old)
+          const current = map.get(n)
+          const piece = {
+            ...current,
+            index: newIndex,
+          }
+          map.set(n, piece)
+          return map
+        })
+        return newIndex
+      })
+    }
+  }, [index, pieces])
 
   const reportRotation = useCallback((n) => {
     setPieces(old => {
@@ -224,7 +226,7 @@ function App({ initialPieces, initialPositions }) {
     setStatusReport(lines.join("\n"))
   }, [counter, pieces])
 
-  const orderedPieces = [...pieceOrder.entries()].sort(([ai, _a], [bi, _b]) => ai - bi)
+  const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index)
   // console.log({ orderedPieces })
 
   return (
@@ -233,7 +235,7 @@ function App({ initialPieces, initialPositions }) {
         <Group x={40} y={40}>
           <Board width={width} height={height} size={size} margin={margin}>
             <Group>
-              {orderedPieces.map(([i, k]) => {
+              {orderedPieces.map(([k, p]) => {
                 const piece = pieces.get(k)
                 const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
                 return <Piece
