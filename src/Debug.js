@@ -1,4 +1,4 @@
-import { Group, Rect, Text } from 'react-konva'
+import { Rect, Text } from 'react-konva'
 
 function Debug({ increment, counter, statusReport }) {
   return (
