@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef, useCallback } from 'react'
-import { Stage, Layer, Group, Rect, Text } from 'react-konva'
+import { Stage, Layer, Group } from 'react-konva'
 
 import Tile from './Tile'
 import Board from './Board'
+import Debug from './Debug'
 
 const swapMatrix = [
   false,
@@ -256,34 +257,31 @@ function App({ initialPieces, initialPositions }) {
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Group x={300} y={40}>
-          <Rect width={100} height={40} fill='grey' onClick={increment} />
-          <Text text={counter} />
-        </Group>
         <Group x={40} y={40}>
-          <Board width={width} height={height} size={size} margin={margin} />
-          <Group>
-            {orderedPieces.map(([i, k]) => {
-              const piece = pieces.get(k)
-              const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
-              return <Piece
-                key={k}
-                size={size}
-                tiles={tiles}
-                fill={piece.fill}
-                position={piece.position}
-                moveToFront={() => moveToFront(k)}
-                reportRotation={() => reportRotation(k)}
-                reportPosition={coord => reportPosition(k, coord)}
-              />
-            })}
-          </Group>
-        </Group>
-        <Group x={500} y={40}>
-          <Text fontFamily='Courier' text={statusReport} />
+          <Board width={width} height={height} size={size} margin={margin}>
+            <Group>
+              {orderedPieces.map(([i, k]) => {
+                const piece = pieces.get(k)
+                const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
+                return <Piece
+                  key={k}
+                  size={size}
+                  tiles={tiles}
+                  fill={piece.fill}
+                  position={piece.position}
+                  moveToFront={() => moveToFront(k)}
+                  reportRotation={() => reportRotation(k)}
+                  reportPosition={coord => reportPosition(k, coord)}
+                />
+              })}
+            </Group>
+          </Board>
         </Group>
         <Group x={40} y={350}>
           <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
+        </Group>
+        <Group x={500} y={40}>
+          <Debug increment={increment} counter={counter} statusReport={statusReport} />
         </Group>
       </Layer>
     </Stage>

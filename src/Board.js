@@ -2,7 +2,7 @@ import { Group, Text } from 'react-konva'
 
 import Tile from './Tile'
 
-function Board({ hits = null, width, height, size, margin, border = 5 }) {
+function Board({ children = null, hits = null, position, width, height, size, margin, border = 5 }) {
   const board = []
   for (let x = 0; x < width; ++x) {
     for (let y = 0; y < height; ++y) {
@@ -32,14 +32,19 @@ function Board({ hits = null, width, height, size, margin, border = 5 }) {
     }
   }
 
-  return board.map(({ key, x, y, size, fill, hit }) => {
-    return (
-      <Group key={key} x={x} y={y}>
-        <Tile key={key} size={size} fill={fill} />
-        {hit && <Text text={hit.count} />}
-      </Group>
-    )
-  })
+  return (
+    <>
+      {board.map(({ key, x, y, size, fill, hit }) => {
+        return (
+          <Group key={key} x={x} y={y}>
+            <Tile key={key} size={size} fill={fill} />
+            {hit && <Text text={hit.count} />}
+          </Group>
+        )
+      })}
+      {children}
+    </>
+  )
 }
 
 export default Board
