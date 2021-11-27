@@ -1,5 +1,4 @@
-import { Component, useEffect, useState, useRef, useMemo, useCallback } from 'react'
-import './App.css'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { Stage, Layer, Group, Rect, Text } from 'react-konva'
 
 import Tile from './Tile'
@@ -76,16 +75,16 @@ function Piece({ tiles, size = 50, fill, position, moveToFront, reportRotation, 
   const click = useCallback(() => {
     reportRotation()
     moveToFront()
-  }, [])
+  }, [reportRotation, moveToFront])
 
   const dragStart = useCallback(() => {
     moveToFront()
-  }, [])
+  }, [moveToFront])
 
   const dragMove = useCallback((e) => {
     // console.log({dragMove: group.current.position()})
     reportPosition(group.current.position())
-  }, [])
+  }, [reportPosition])
 
   const dragEnd = useCallback(() => {
 
@@ -243,7 +242,7 @@ function App({ initialPieces, initialPositions }) {
     console.log({ moveToFront: n })
     setPieceOrder(m => {
       let j = 0
-      for (let [i, k] of m.entries()) {
+      for (let k of m.values()) {
         if (k !== n) m.set(j++, k)
       }
       m.set(j++, n)
@@ -262,7 +261,7 @@ function App({ initialPieces, initialPositions }) {
       map.set(n, piece)
       return map
     })
-  }, [pieces])
+  }, [])
 
   const reportPosition = useCallback((n, position) => {
     const current = pieces.get(n)
