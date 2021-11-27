@@ -3,6 +3,8 @@ import './App.css';
 import { Stage, Layer, Group, Rect, Text } from 'react-konva';
 import Konva from 'konva';
 
+import Tile from './Tile'
+
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
@@ -121,20 +123,6 @@ function Piece({ tiles, size = 50, fill, position, moveToFront, reportRotation, 
     <Group ref={group} x={position.x} y={position.y} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable>
       {tiles.map(({ key, x, y }) => <Tile key={key} x={x} y={y} size={size} fill={fill} />)}
     </Group>
-  )
-}
-
-function Tile({ x, y, size, fill }) {
-  return (
-    <Rect
-      x={x}
-      y={y}
-      width={size}
-      height={size}
-      fill={fill}
-      shadowBlur={4}
-      cornerRadius={1}
-    />
   )
 }
 
