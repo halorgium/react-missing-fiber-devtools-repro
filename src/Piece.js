@@ -33,7 +33,6 @@ function Piece({ tiles, size = 50, margin, fill, position, moveable, moveToFront
     const position = group.current.position()
     const x = Math.round(position.x / grid)
     const y = Math.round(position.y / grid)
-    console.log({x, y})
     setX(x * grid)
     setY(y * grid)
     reportPosition({x, y})
