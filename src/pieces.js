@@ -59,52 +59,64 @@ const unsolved = new Map()
 unsolved.set('red', {
   x: -2,
   y: 0,
+  r: 0,
 })
 unsolved.set('green', {
   x: -2,
   y: -2,
+  r: 0,
 })
 unsolved.set('yellow', {
   x: 4,
   y: 5,
+  r: 0,
 })
 unsolved.set('orange', {
   x: 5,
   y: 2,
+  r: 0,
 })
 unsolved.set('blue', {
   x: -2,
   y: 5,
+  r: 0,
 })
 unsolved.set('pink', {
   x: 4,
   y: -2,
+  r: 0,
 })
 
 const online = new Map()
 online.set('red', {
   x: 0,
   y: 0,
+  r: 0,
 })
 online.set('green', {
   x: 1,
   y: 0,
+  r: 0,
 })
 online.set('yellow', {
   x: 3,
   y: 0,
+  r: 0,
 })
 online.set('orange', {
   x: 0,
   y: 3,
+  r: 0,
 })
 online.set('blue', {
   x: 1,
   y: 3,
+  r: 0,
 })
 online.set('pink', {
   x: 2,
   y: 2,
+  r: 0,
 })
 
 const hack = new Map()
@@ -139,9 +151,21 @@ hack.set('pink', {
   r: 1,
 })
 
+const partialHack = new Map(unsolved)
+partialHack.set('green', {
+  moveable: false,
+  ...hack.get('green'),
+})
+partialHack.set('orange', {
+  moveable: false,
+  ...hack.get('orange'),
+})
+
+
 const positions = {
   online,
   hack,
+  partialHack,
   unsolved,
 }
 

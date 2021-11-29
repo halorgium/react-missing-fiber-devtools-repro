@@ -160,6 +160,7 @@ function App({ initialPieces, initialPositions }) {
           y: position.y * (size + margin),
         },
         rotation: position.r,
+        moveable: position.moveable != null ? position.moveable : true,
         index: -1,
       })
     }
@@ -244,6 +245,7 @@ function App({ initialPieces, initialPositions }) {
                   tiles={tiles}
                   fill={piece.fill}
                   position={piece.position}
+                  moveable={piece.moveable}
                   moveToFront={() => moveToFront(k)}
                   reportRotation={() => reportRotation(k)}
                   reportPosition={coord => reportPosition(k, coord)}

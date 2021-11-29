@@ -3,11 +3,13 @@ import { Group } from 'react-konva'
 
 import Tile from './Tile'
 
-function Piece({ tiles, size = 50, fill, position, moveToFront, reportRotation, reportPosition }) {
+function Piece({ tiles, size = 50, fill, position, moveable, moveToFront, reportRotation, reportPosition }) {
   const group = useRef(null)
   const click = useCallback(() => {
-    reportRotation()
-    moveToFront()
+    if (moveable) {
+      reportRotation()
+      moveToFront()
+    }
   }, [reportRotation, moveToFront])
 
   const dragStart = useCallback(() => {
@@ -24,7 +26,7 @@ function Piece({ tiles, size = 50, fill, position, moveToFront, reportRotation, 
   }, [])
 
   return (
-    <Group ref={group} x={position.x} y={position.y} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable>
+    <Group ref={group} x={position.x} y={position.y} onClick={click} onDragStart={dragStart} onDragMove={dragMove} onDragEnd={dragEnd} draggable={moveable}>
       {tiles.map(({ key, x, y }) => <Tile key={key} x={x} y={y} size={size} fill={fill} />)}
     </Group>
   )

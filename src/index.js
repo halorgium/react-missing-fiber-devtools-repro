@@ -7,7 +7,7 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App initialPieces={pieces} initialPositions={positions.hack} />
+    <App initialPieces={pieces} initialPositions={positions.partialHack} />
   </React.StrictMode>,
   document.getElementById('root')
 );
