@@ -38,14 +38,6 @@ function normalize(coords) {
   })
 }
 
-function scale(coord, { size, margin }) {
-  return {
-    ...coord,
-    x: coord.x * (size + margin),
-    y: coord.y * (size + margin),
-  }
-}
-
 function rotate(coords, rotation) {
   const swap = swapMatrix[rotation]
   const [scaleX, scaleY] = scaleMatrix[rotation]
@@ -84,47 +76,22 @@ function buildBoardHits({ width, height }) {
   return xMap
 }
 
-function detectHits({ width, height, size, margin, pieces }) {
-  const accuracy = 0.1
+function detectHits({ width, height, pieces }) {
   const hits = buildBoardHits({ width, height })
 
   const lines = []
-  lines.push(`size = ${size}, margin = ${margin}`)
-  const grid = size + margin
   for (let [k, piece] of pieces) {
-    lines.push(`>>> ${k}`)
     const { rotation, position } = piece
-    // lines.push(`r = ${rotation}`)
-    // lines.push(`x = ${position.x}, y = ${position.y}`)
-    const gx = position.x / grid
-    const gy = position.y / grid
-    // lines.push(`gx = ${gx}, gy = ${gy}`)
+    lines.push(`>>> ${k} @ ${position.x}, ${position.y} (${rotation})`)
 
-    const dx = ((gx % 1) + 1) % 1
-    const closeX = dx < accuracy || dx > (1 - accuracy)
-    const x = Math.round(gx)
-    if (closeX) {
-      // lines.push(`x is close to ${x}`)
-    }
-    const dy = ((gy % 1) + 1) % 1
-    const y = Math.round(gy)
-    const closeY = dy < accuracy || dy > (1 - accuracy)
-    if (closeY) {
-      // lines.push(`y is close to ${y}`)
-    }
-
-    if (closeX && closeY) {
-      lines.push(`fully aligned @ ${x}, ${y} (${rotation})`)
-      const tiles = rotate(piece.tiles, rotation)
-      for (let tile of tiles) {
-        const ax = x + tile.x
-        const ay = y + tile.y
-        // lines.push(`${ax}, ${ay}`)
-        if (hits.has(ax)) {
-          if (hits.get(ax).has(ay)) {
-            const h = hits.get(ax).get(ay)
-            h.push(k)
-          }
+    const tiles = rotate(piece.tiles, rotation)
+    for (let tile of tiles) {
+      const ax = position.x + tile.x
+      const ay = position.y + tile.y
+      if (hits.has(ax)) {
+        if (hits.get(ax).has(ay)) {
+          const h = hits.get(ax).get(ay)
+          h.push(k)
         }
       }
     }
@@ -155,10 +122,7 @@ function App({ initialPieces, initialPositions }) {
       map.set(k, {
         fill: p.fill,
         tiles: p.tiles,
-        position: {
-          x: position.x * (size + margin),
-          y: position.y * (size + margin),
-        },
+        position: position,
         rotation: position.r,
         moveable: position.moveable != null ? position.moveable : true,
         index: -1,
@@ -238,10 +202,11 @@ function App({ initialPieces, initialPositions }) {
             <Group>
               {orderedPieces.map(([k, p]) => {
                 const piece = pieces.get(k)
-                const tiles = rotate(piece.tiles, piece.rotation).map(coord => scale(coord, { size, margin }))
+                const tiles = rotate(piece.tiles, piece.rotation)
                 return <Piece
                   key={k}
                   size={size}
+                  margin={margin}
                   tiles={tiles}
                   fill={piece.fill}
                   position={piece.position}
