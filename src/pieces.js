@@ -107,8 +107,41 @@ online.set('pink', {
   y: 2,
 })
 
+const hack = new Map()
+hack.set('red', {
+  x: 0,
+  y: 3,
+  r: 1,
+})
+hack.set('green', {
+  x: 0,
+  y: 1,
+  r: 1,
+})
+hack.set('yellow', {
+  x: 0,
+  y: 0,
+  r: 1,
+})
+hack.set('orange', {
+  x: 3,
+  y: 3,
+  r: 1,
+})
+hack.set('blue', {
+  x: 3,
+  y: 1,
+  r: 1,
+})
+hack.set('pink', {
+  x: 2,
+  y: 0,
+  r: 1,
+})
+
 const positions = {
   online,
+  hack,
   unsolved,
 }
 

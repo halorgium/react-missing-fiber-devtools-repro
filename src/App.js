@@ -159,7 +159,7 @@ function App({ initialPieces, initialPositions }) {
           x: position.x * (size + margin),
           y: position.y * (size + margin),
         },
-        rotation: 0,
+        rotation: position.r,
         index: -1,
       })
     }
