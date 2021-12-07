@@ -162,12 +162,12 @@ partialHack.set('orange', {
 })
 
 
-const positions = {
-  online,
-  hack,
-  partialHack,
-  unsolved,
-}
+const positions = new Map([
+  ['online', online],
+  ['hack', hack],
+  ['partialHack', partialHack],
+  ['unsolved', unsolved],
+])
 
 export { positions }
 export default pieces
