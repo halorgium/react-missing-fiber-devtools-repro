@@ -35,7 +35,7 @@ function Piece({ tiles, size = 50, margin, fill, position, moveable, moveToFront
     const y = Math.round(position.y / grid)
     setX(x * grid)
     setY(y * grid)
-    reportPosition({x, y})
+    reportPosition({ x, y })
     setDragging(false)
   }, [reportPosition, grid])
 

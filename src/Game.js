@@ -5,6 +5,7 @@ import { Stage, Layer, Group } from 'react-konva'
 import Piece from './Piece'
 import Board from './Board'
 import Debug from './Debug'
+import GridMap from './GridMap'
 
 const swapMatrix = [
   false,
@@ -65,20 +66,8 @@ function rotate(coords, rotation) {
   }))
 }
 
-function buildBoardHits({ width, height }) {
-  const xMap = new Map()
-  for (let x = 0; x < width; ++x) {
-    const yMap = new Map()
-    xMap.set(x, yMap)
-    for (let y = 0; y < height; ++y) {
-      yMap.set(y, [])
-    }
-  }
-  return xMap
-}
-
-function detectHits({ width, height, pieces }) {
-  const hits = buildBoardHits({ width, height })
+function detectHits({ boardTiles, pieces }) {
+  const hits = boardTiles.mapValues((x, y) => [])
 
   const lines = []
   for (let [k, piece] of pieces) {
@@ -89,11 +78,11 @@ function detectHits({ width, height, pieces }) {
     for (let tile of tiles) {
       const ax = position.x + tile.x
       const ay = position.y + tile.y
-      if (hits.has(ax)) {
-        if (hits.get(ax).has(ay)) {
-          const h = hits.get(ax).get(ay)
-          h.push(k)
-        }
+      console.log({ax, ay, hits})
+      const h = hits.get(ax, ay)
+      if (h !== null && h !== undefined) {
+        console.log({h})
+        h.push(k)
       }
     }
   }
@@ -113,7 +102,13 @@ function Game({ initialPieces, initialPositions }) {
     setCounter(i => i + 1)
   }, [])
 
-  const [boardHits, setBoardHits] = useState(() => buildBoardHits({ width, height }))
+  const boardTiles = new GridMap()
+  for (let x = 0; x < width; ++x) {
+    for (let y = 0; y < height; ++y) {
+      boardTiles.set(x, y, null)
+    }
+  }
+  const [boardHits, setBoardHits] = useState(() => boardTiles.mapValues(( x, y ) => []))
 
   const [index, setIndex] = useState(0)
   const [pieces, setPieces] = useState(() => {
@@ -184,8 +179,10 @@ function Game({ initialPieces, initialPositions }) {
 
   const [statusReport, setStatusReport] = useState([])
 
+
+
   useEffect(() => {
-    const [hits, lines] = detectHits({ width, height, size, margin, pieces })
+    const [hits, lines] = detectHits({ boardTiles, pieces })
 
     setBoardHits(hits)
     // console.log({ hits })
@@ -199,7 +196,7 @@ function Game({ initialPieces, initialPositions }) {
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
         <Group x={130} y={130}>
-          <Board width={width} height={height} size={size} margin={margin}>
+          <Board tiles={boardTiles} size={size} margin={margin}>
             <Group>
               {orderedPieces.map(([k, p]) => {
                 const piece = pieces.get(k)
@@ -223,7 +220,7 @@ function Game({ initialPieces, initialPositions }) {
         <Group x={500} y={40}>
           <Debug increment={increment} counter={counter} statusReport={statusReport} />
           <Group y={250}>
-            <Board width={width} height={height} size={20} margin={5} border={1} hits={boardHits} />
+            <Board tiles={boardTiles} size={20} margin={5} border={1} hits={boardHits} />
           </Group>
         </Group>
       </Layer>

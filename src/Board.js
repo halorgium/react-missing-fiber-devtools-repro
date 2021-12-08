@@ -2,46 +2,43 @@ import { Group, Text } from 'react-konva'
 
 import Tile from './Tile'
 
-function Board({ children = null, hits = null, position, width, height, size, margin, border = 5 }) {
-  const board = []
-  for (let x = 0; x < width; ++x) {
-    for (let y = 0; y < height; ++y) {
-      const key = `x${x}y${y}`
-      let fill = 'grey'
-      let hit = null
-      if (hits !== null) {
-        fill = 'orange'
-        const h = hits.get(x).get(y)
-        if (h.length === 1) {
-          fill = 'green'
-        }
-        else if (h.length > 0) {
-          fill = 'red'
-        }
-        hit = { count: h.length }
+function Board({ children = null, hits = null, position, tiles, size, margin, border = 5 }) {
+  const board = tiles.mapValues(( x, y, value ) => {
+    let fill = 'grey'
+    let hit = null
+    if (hits !== null) {
+      fill = 'orange'
+      const h = hits.get(x, y)
+      if (h.length === 1) {
+        fill = 'green'
       }
-
-      board.push({
-        key,
-        x: x * (size + margin) - border,
-        y: y * (size + margin) - border,
-        size: size + border * 2,
-        fill,
-        hit,
-      })
+      else if (h.length > 0) {
+        fill = 'red'
+      }
+      hit = { count: h.length }
     }
-  }
+
+    return {
+      fill,
+      hit,
+    }
+  })
+
+  const scale = (size + margin) - border
+
+  console.log({board})
 
   return (
     <>
-      {board.map(({ key, x, y, size, fill, hit }) => {
+      {board.mapValues((x, y, { fill, hit }) => {
+        const key = `x${x}y${y}`
         return (
-          <Group key={key} x={x} y={y}>
-            <Tile key={key} size={size} fill={fill} />
+          <Group key={key} x={x * scale} y={y * scale}>
+            <Tile key={key} size={size + border * 2} fill={fill} />
             {hit && <Text text={hit.count} />}
           </Group>
         )
-      })}
+      }).values()}
       {children}
     </>
   )

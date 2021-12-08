@@ -19,7 +19,7 @@ function SelectedGame() {
   return (
     <>
       <select value={game} onChange={onGameSelect}>
-        {Array.from(positions.keys()).map(k => <option value={k}>{k}</option>)}
+        {Array.from(positions.keys()).map(k => <option key={k} value={k}>{k}</option>)}
       </select>
       <Game key={game} initialPieces={pieces} initialPositions={positions.get(game)} />
     </>
