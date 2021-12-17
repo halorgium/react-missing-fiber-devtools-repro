@@ -1,20 +1,25 @@
-import { BrowserRouter, useSearchParams, useNavigate } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate, generatePath } from "react-router-dom"
 
 import Game from './Game'
 import pieces from './data/pieces'
 import fiveSquare from './data/boards/fiveSquare'
 
 function SelectedGame() {
-  const [params] = useSearchParams()
   const navigate = useNavigate()
 
-  let game = params.get("game")
+  let { board, game } = useParams()
+  console.log({ board, game})
   if (game === null) {
     game = "unsolved"
   }
 
   const onGameSelect = function (event) {
-    navigate(`./?game=${event.target.value}`)
+    const path = generatePath("/:board/:game", {
+      board: 'fiveSquare',
+      game: event.target.value,
+    })
+
+    navigate(path)
   }
 
   const tiles = fiveSquare.tiles
@@ -24,7 +29,7 @@ function SelectedGame() {
     <>
       <select value={game} onChange={onGameSelect}>
         {/* <option key='simple' value='simple'>Simple</option> */}
-        {Array.from(positions.keys()).map(k => <option key={k} value={k}>{k}</option>)}
+        {Array.from(fiveSquare.positions.keys()).map(k => <option key={k} value={k}>{k}</option>)}
       </select>
       <Game key={game} tiles={tiles} initialPieces={pieces} initialPositions={positions} />
     </>
@@ -34,7 +39,10 @@ function SelectedGame() {
 function App() {
   return (
     <BrowserRouter>
-      <SelectedGame />
+      <Routes>
+        <Route path="/:board/:game" element={<SelectedGame />} />
+        <Route path="*" element={<Navigate to="/fiveSquare/unsolved" replace={true} />} />
+      </Routes>
     </BrowserRouter>
   )
 }
