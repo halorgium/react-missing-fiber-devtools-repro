@@ -66,8 +66,8 @@ function rotate(coords, rotation) {
   }))
 }
 
-function detectHits({ boardTiles, pieces }) {
-  const hits = boardTiles.mapValues((x, y) => [])
+function detectHits(tiles, pieces) {
+  const hits = tiles.mapValues((x, y) => [])
 
   const lines = []
   for (let [k, piece] of pieces) {
@@ -90,8 +90,7 @@ function detectHits({ boardTiles, pieces }) {
   return [hits, lines]
 }
 
-
-function Game({ initialPieces, initialPositions }) {
+function Game({ tiles, initialPieces, initialPositions }) {
   const size = 30
   const margin = 15
   const width = 5
@@ -102,16 +101,7 @@ function Game({ initialPieces, initialPositions }) {
     setCounter(i => i + 1)
   }, [])
 
-  const [boardTiles, setBoardTiles] = useState(() => {
-    const map = new GridMap()
-    for (let x = 0; x < width; ++x) {
-      for (let y = 0; y < height; ++y) {
-        map.set(x, y, null)
-      }
-    }
-    return map
-  })
-  const [boardHits, setBoardHits] = useState(() => boardTiles.mapValues((x, y) => []))
+  const [boardHits, setBoardHits] = useState(() => tiles.mapValues((x, y) => []))
 
   const [index, setIndex] = useState(0)
   const [pieces, setPieces] = useState(() => {
@@ -183,12 +173,12 @@ function Game({ initialPieces, initialPositions }) {
   const [statusReport, setStatusReport] = useState([])
 
   useEffect(() => {
-    const [hits, lines] = detectHits({ boardTiles, pieces })
+    const [hits, lines] = detectHits(tiles, pieces)
 
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [boardTiles, pieces])
+  }, [tiles, pieces])
 
   const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index)
   // console.log({ orderedPieces })
@@ -197,7 +187,7 @@ function Game({ initialPieces, initialPositions }) {
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
         <Group x={130} y={130}>
-          <Board tiles={boardTiles} size={size} margin={margin}>
+          <Board tiles={tiles} size={size} margin={margin}>
             <Group>
               {orderedPieces.map(([k, p]) => {
                 const piece = pieces.get(k)
@@ -221,7 +211,7 @@ function Game({ initialPieces, initialPositions }) {
         <Group x={500} y={40}>
           <Debug increment={increment} counter={counter} statusReport={statusReport} />
           <Group y={250}>
-            <Board tiles={boardTiles} size={20} margin={5} border={1} hits={boardHits} />
+            <Board tiles={tiles} size={20} margin={5} border={1} hits={boardHits} />
           </Group>
         </Group>
       </Layer>

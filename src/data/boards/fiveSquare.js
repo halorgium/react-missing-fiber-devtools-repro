@@ -1,59 +1,4 @@
-const pieces = new Map()
-pieces.set('red', {
-  tiles: [
-    { x: 0, y: 0 },
-    { x: 0, y: 1 },
-    { x: 0, y: 2 },
-    { x: 1, y: 2 },
-  ],
-  fill: '#DE453D'
-})
-pieces.set('green', {
-  tiles: [
-    { x: 0, y: 0 },
-    { x: 0, y: 1 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 2, y: 0 },
-  ],
-  fill: '#B8F570'
-})
-pieces.set('yellow', {
-  tiles: [
-    { x: 1, y: 0 },
-    { x: 0, y: 1 },
-    { x: 1, y: 1 },
-    { x: 1, y: 2 },
-  ],
-  fill: 'yellow'
-})
-pieces.set('orange', {
-  tiles: [
-    { x: 0, y: 0 },
-    { x: 0, y: 1 },
-    { x: 1, y: 1 },
-  ],
-  fill: 'orange'
-})
-pieces.set('blue', {
-  tiles: [
-    { x: 0, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 2, y: 1 },
-  ],
-  fill: 'blue'
-})
-pieces.set('pink', {
-  tiles: [
-    { x: 0, y: 0 },
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 2, y: 1 },
-    { x: 2, y: 2 },
-  ],
-  fill: 'pink'
-})
+import GridMap from '../../GridMap'
 
 const unsolved = new Map()
 unsolved.set('red', {
@@ -161,7 +106,6 @@ partialHack.set('orange', {
   ...hack.get('orange'),
 })
 
-
 const positions = new Map([
   ['online', online],
   ['hack', hack],
@@ -169,5 +113,15 @@ const positions = new Map([
   ['unsolved', unsolved],
 ])
 
-export { positions }
-export default pieces
+const width = 5
+const height = 5
+const tiles = new GridMap()
+for (let x = 0; x < width; ++x) {
+  for (let y = 0; y < height; ++y) {
+    tiles.set(x, y, null)
+  }
+}
+
+const board = { tiles, positions }
+
+export default board

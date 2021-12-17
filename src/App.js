@@ -1,7 +1,8 @@
 import { BrowserRouter, useSearchParams, useNavigate } from "react-router-dom"
 
 import Game from './Game'
-import pieces, { positions } from './pieces'
+import pieces from './data/pieces'
+import fiveSquare from './data/boards/fiveSquare'
 
 function SelectedGame() {
   const [params] = useSearchParams()
@@ -16,12 +17,16 @@ function SelectedGame() {
     navigate(`./?game=${event.target.value}`)
   }
 
+  const tiles = fiveSquare.tiles
+  const positions = fiveSquare.positions.get(game)
+
   return (
     <>
       <select value={game} onChange={onGameSelect}>
+        {/* <option key='simple' value='simple'>Simple</option> */}
         {Array.from(positions.keys()).map(k => <option key={k} value={k}>{k}</option>)}
       </select>
-      <Game key={game} initialPieces={pieces} initialPositions={positions.get(game)} />
+      <Game key={game} tiles={tiles} initialPieces={pieces} initialPositions={positions} />
     </>
   )
 }
