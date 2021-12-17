@@ -6,7 +6,7 @@ class GridMap {
 
   get (x, y) {
     const row = this.#rows.get(x)
-    if (row !== null) {
+    if (row !== null && row !== undefined) {
       return row.get(y)
     }
     return null

@@ -78,10 +78,10 @@ function detectHits({ boardTiles, pieces }) {
     for (let tile of tiles) {
       const ax = position.x + tile.x
       const ay = position.y + tile.y
-      console.log({ax, ay, hits})
+      console.log({ ax, ay, hits })
       const h = hits.get(ax, ay)
       if (h !== null && h !== undefined) {
-        console.log({h})
+        console.log({ h })
         h.push(k)
       }
     }
@@ -102,13 +102,16 @@ function Game({ initialPieces, initialPositions }) {
     setCounter(i => i + 1)
   }, [])
 
-  const boardTiles = new GridMap()
-  for (let x = 0; x < width; ++x) {
-    for (let y = 0; y < height; ++y) {
-      boardTiles.set(x, y, null)
+  const [boardTiles, setBoardTiles] = useState(() => {
+    const map = new GridMap()
+    for (let x = 0; x < width; ++x) {
+      for (let y = 0; y < height; ++y) {
+        map.set(x, y, null)
+      }
     }
-  }
-  const [boardHits, setBoardHits] = useState(() => boardTiles.mapValues(( x, y ) => []))
+    return map
+  })
+  const [boardHits, setBoardHits] = useState(() => boardTiles.mapValues((x, y) => []))
 
   const [index, setIndex] = useState(0)
   const [pieces, setPieces] = useState(() => {
@@ -179,15 +182,13 @@ function Game({ initialPieces, initialPositions }) {
 
   const [statusReport, setStatusReport] = useState([])
 
-
-
   useEffect(() => {
     const [hits, lines] = detectHits({ boardTiles, pieces })
 
     setBoardHits(hits)
     // console.log({ hits })
     setStatusReport(lines.join("\n"))
-  }, [counter, pieces])
+  }, [boardTiles, pieces])
 
   const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index)
   // console.log({ orderedPieces })

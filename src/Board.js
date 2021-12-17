@@ -3,7 +3,7 @@ import { Group, Text } from 'react-konva'
 import Tile from './Tile'
 
 function Board({ children = null, hits = null, position, tiles, size, margin, border = 5 }) {
-  const board = tiles.mapValues(( x, y, value ) => {
+  const board = tiles.mapValues((x, y, value) => {
     let fill = 'grey'
     let hit = null
     if (hits !== null) {
@@ -26,7 +26,7 @@ function Board({ children = null, hits = null, position, tiles, size, margin, bo
 
   const scale = (size + margin) - border
 
-  console.log({board})
+  console.log({ board })
 
   return (
     <>
