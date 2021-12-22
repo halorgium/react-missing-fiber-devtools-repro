@@ -55,4 +55,42 @@ pieces.set('pink', {
   fill: 'pink'
 })
 
+// 1x1
+pieces.set('red1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: '#DE453D'
+})
+pieces.set('green1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: '#B8F570'
+})
+pieces.set('yellow1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: 'yellow'
+})
+pieces.set('orange1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: 'orange'
+})
+pieces.set('blue1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: 'blue'
+})
+pieces.set('pink1', {
+  tiles: [
+    { x: 0, y: 0 },
+  ],
+  fill: 'pink'
+})
+
 export default pieces

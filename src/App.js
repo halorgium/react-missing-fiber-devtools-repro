@@ -1,8 +1,23 @@
-import { BrowserRouter, Routes, Route, Navigate, useParams, useNavigate, generatePath } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Link, Navigate, useParams, useNavigate, generatePath } from "react-router-dom"
 
 import Game from './Game'
 import pieces from './data/pieces'
+import debug from './data/boards/debug'
 import fiveSquare from './data/boards/fiveSquare'
+
+const boardLookup = {
+  debug,
+  fiveSquare,
+}
+
+function Home () {
+  return (
+    <ul>
+      <li><Link to="/fiveSquare/unsolved">Five by Five Square</Link></li>
+      <li><Link to="/debug/unsolved">Debug</Link></li>
+    </ul>
+  )
+}
 
 function SelectedGame() {
   const navigate = useNavigate()
@@ -15,15 +30,15 @@ function SelectedGame() {
 
   const onGameSelect = function (event) {
     const path = generatePath("/:board/:game", {
-      board: 'fiveSquare',
+      board: board,
       game: event.target.value,
     })
 
     navigate(path)
   }
 
-  const tiles = fiveSquare.tiles
-  const positions = fiveSquare.positions.get(game)
+  const tiles = boardLookup[board].tiles
+  const positions = boardLookup[board].positions.get(game)
 
   return (
     <>
@@ -41,6 +56,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/:board/:game" element={<SelectedGame />} />
+        <Route path="/" element={<Home />} />
         <Route path="*" element={<Navigate to="/fiveSquare/unsolved" replace={true} />} />
       </Routes>
     </BrowserRouter>

@@ -108,6 +108,11 @@ function Game({ tiles, initialPieces, initialPositions }) {
     const map = new Map()
     for (let [k, p] of initialPieces.entries()) {
       const position = initialPositions.get(k)
+
+      if (position === null || position === undefined) {
+        continue
+      }
+
       map.set(k, {
         fill: p.fill,
         tiles: p.tiles,
