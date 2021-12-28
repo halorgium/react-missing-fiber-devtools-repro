@@ -6,6 +6,7 @@ import Tile from './Tile'
 function Piece({ tiles, size = 50, margin, fill, position, moveable, moveToFront, reportRotation, reportPosition }) {
   const grid = size + margin
 
+  // eslint-disable-next-line no-unused-vars
   const [dragging, setDragging] = useState(false)
   const [x, setX] = useState(position.x * grid)
   const [y, setY] = useState(position.y * grid)

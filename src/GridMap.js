@@ -36,6 +36,7 @@ class GridMap {
 
   values() {
     const result = []
+    // eslint-disable-next-line no-unused-vars
     for (let [x, y, value] of this) {
       result.push(value)
     }
