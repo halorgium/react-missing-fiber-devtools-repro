@@ -1,10 +1,10 @@
 class GridMap {
   #rows
-  constructor () {
+  constructor() {
     this.#rows = new Map()
   }
 
-  get (x, y) {
+  get(x, y) {
     const row = this.#rows.get(x)
     if (row !== null && row !== undefined) {
       return row.get(y)
@@ -12,7 +12,7 @@ class GridMap {
     return null
   }
 
-  set (x, y, value) {
+  set(x, y, value) {
     let row = this.#rows.get(x)
     if (row === null || row === undefined) {
       row = new Map()
@@ -21,7 +21,7 @@ class GridMap {
     row.set(y, value)
   }
 
-  map (callback) {
+  map(callback) {
     const result = new GridMap()
     for (let [x, y, value] of this) {
       const [newX, newY, newValue] = callback(x, y, value)
@@ -30,8 +30,7 @@ class GridMap {
     return result
   }
 
-  mapValues (callback) {
-    console.log({gridmap: this})
+  mapValues(callback) {
     return this.map((x, y, value) => [x, y, callback(x, y, value)])
   }
 
@@ -43,7 +42,7 @@ class GridMap {
     return result
   }
 
-  *[Symbol.iterator] () {
+  *[Symbol.iterator]() {
     for (let [row, columns] of this.#rows.entries()) {
       for (let [column, value] of columns.entries()) {
         yield [row, column, value]

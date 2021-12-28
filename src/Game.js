@@ -5,7 +5,6 @@ import { Stage, Layer, Group } from 'react-konva'
 import Piece from './Piece'
 import Board from './Board'
 import Debug from './Debug'
-import GridMap from './GridMap'
 
 const swapMatrix = [
   false,
@@ -78,10 +77,8 @@ function detectHits(tiles, pieces) {
     for (let tile of tiles) {
       const ax = position.x + tile.x
       const ay = position.y + tile.y
-      console.log({ ax, ay, hits })
       const h = hits.get(ax, ay)
       if (h !== null && h !== undefined) {
-        console.log({ h })
         h.push(k)
       }
     }
@@ -93,8 +90,6 @@ function detectHits(tiles, pieces) {
 function Game({ tiles, initialPieces, initialPositions }) {
   const size = 30
   const margin = 15
-  const width = 5
-  const height = 5
 
   const [counter, setCounter] = useState(0)
   const increment = useCallback(() => {
@@ -126,8 +121,6 @@ function Game({ tiles, initialPieces, initialPositions }) {
   })
 
   const moveToFront = useCallback(n => {
-    console.log({ moveToFront: n })
-
     if (pieces.get(n).index !== index) {
       setIndex(i => {
         const newIndex = i + 1
@@ -181,12 +174,10 @@ function Game({ tiles, initialPieces, initialPositions }) {
     const [hits, lines] = detectHits(tiles, pieces)
 
     setBoardHits(hits)
-    // console.log({ hits })
     setStatusReport(lines.join("\n"))
   }, [tiles, pieces])
 
   const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index)
-  // console.log({ orderedPieces })
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>

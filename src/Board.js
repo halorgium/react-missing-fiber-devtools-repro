@@ -26,8 +26,6 @@ function Board({ children = null, hits = null, position, tiles, size, margin, bo
 
   const scale = (size + margin) - border
 
-  console.log({ board })
-
   return (
     <>
       {board.mapValues((x, y, { fill, hit }) => {

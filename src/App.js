@@ -10,7 +10,7 @@ const boardLookup = {
   fiveSquare,
 }
 
-function Home () {
+function Home() {
   return (
     <ul>
       <li><Link to="/fiveSquare/unsolved">Five by Five Square</Link></li>
@@ -23,7 +23,7 @@ function SelectedGame() {
   const navigate = useNavigate()
 
   let { board, game } = useParams()
-  console.log({ board, game})
+  console.log({ board, game })
   if (game === null) {
     game = "unsolved"
   }

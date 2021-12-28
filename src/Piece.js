@@ -16,7 +16,7 @@ function Piece({ tiles, size = 50, margin, fill, position, moveable, moveToFront
       reportRotation()
       moveToFront()
     }
-  }, [reportRotation, moveToFront])
+  }, [moveable, reportRotation, moveToFront])
 
   const dragStart = useCallback(() => {
     moveToFront()
@@ -27,7 +27,7 @@ function Piece({ tiles, size = 50, margin, fill, position, moveable, moveToFront
     const position = group.current.position()
     setX(position.x)
     setY(position.y)
-  })
+  }, [])
 
   const dragEnd = useCallback(() => {
     const position = group.current.position()
