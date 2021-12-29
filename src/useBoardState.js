@@ -168,6 +168,9 @@ const useBoardState = (tiles, initialPieces, initialPositions) => {
       ...piece,
       key,
       tiles,
+      moveToFront: () => moveToFront(key),
+      reportRotation: () => reportRotation(key),
+      reportPosition: (coord) => reportPosition(key, coord),
     }
   })
 
@@ -175,9 +178,6 @@ const useBoardState = (tiles, initialPieces, initialPositions) => {
     pieces: orderedPieces,
     hits: boardHits,
     statusReport,
-    moveToFront,
-    reportRotation,
-    reportPosition,
   }
 }
 

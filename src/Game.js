@@ -35,9 +35,9 @@ function Game({ tiles, initialPieces, initialPositions }) {
                   fill={piece.fill}
                   position={piece.position}
                   moveable={piece.moveable}
-                  moveToFront={() => board.moveToFront(piece.key)}
-                  reportRotation={() => board.reportRotation(piece.key)}
-                  reportPosition={coord => board.reportPosition(piece.key, coord)}
+                  moveToFront={piece.moveToFront}
+                  reportRotation={piece.reportRotation}
+                  reportPosition={piece.reportPosition}
                 />
               })}
             </Group>
