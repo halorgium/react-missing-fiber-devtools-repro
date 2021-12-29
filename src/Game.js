@@ -5,7 +5,7 @@ import { Stage, Layer, Group } from 'react-konva'
 import Piece from './Piece'
 import Board from './Board'
 import Debug from './Debug'
-import useBoardState, { rotate } from './useBoardState'
+import useBoardState from './useBoardState'
 
 function Game({ tiles, initialPieces, initialPositions }) {
   const size = 30
@@ -26,20 +26,18 @@ function Game({ tiles, initialPieces, initialPositions }) {
         <Group x={130} y={130}>
           <Board tiles={tiles} size={size} margin={margin}>
             <Group>
-              {board.orderedPieces.map(([k, p]) => {
-                const piece = board.pieces.get(k)
-                const tiles = rotate(piece.tiles, piece.rotation)
+              {board.pieces.map(piece => {
                 return <Piece
-                  key={k}
+                  key={piece.key}
                   size={size}
                   margin={margin}
-                  tiles={tiles}
+                  tiles={piece.tiles}
                   fill={piece.fill}
                   position={piece.position}
                   moveable={piece.moveable}
-                  moveToFront={() => board.moveToFront(k)}
-                  reportRotation={() => board.reportRotation(k)}
-                  reportPosition={coord => board.reportPosition(k, coord)}
+                  moveToFront={() => board.moveToFront(piece.key)}
+                  reportRotation={() => board.reportRotation(piece.key)}
+                  reportPosition={coord => board.reportPosition(piece.key, coord)}
                 />
               })}
             </Group>

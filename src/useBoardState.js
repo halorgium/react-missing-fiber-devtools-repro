@@ -162,11 +162,17 @@ const useBoardState = (tiles, initialPieces, initialPositions) => {
     setStatusReport(lines.join("\n"))
   }, [tiles, pieces])
 
-  const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index)
+  const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index).map(([key, piece]) => {
+    const tiles = rotate(piece.tiles, piece.rotation)
+    return {
+      ...piece,
+      key,
+      tiles,
+    }
+  })
 
   return {
-    orderedPieces,
-    pieces,
+    pieces: orderedPieces,
     hits: boardHits,
     statusReport,
     moveToFront,
@@ -176,4 +182,3 @@ const useBoardState = (tiles, initialPieces, initialPositions) => {
 }
 
 export default useBoardState
-export { rotate }
