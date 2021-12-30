@@ -184,6 +184,7 @@ function useBoardState(tiles: GridStore, initialPieces: Map<PieceName, PieceData
     const tiles = rotate(piece.tiles, piece.r)
     return {
       ...piece,
+      moveable: piece.moveable === undefined ? true : piece.moveable,
       key,
       tiles,
       moveToFront: () => moveToFront(key),

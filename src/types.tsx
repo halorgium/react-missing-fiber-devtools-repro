@@ -25,12 +25,9 @@ export interface PieceData {
   fill: Fill
 }
 
-export interface PieceState extends PieceData {
+export interface PieceState extends PieceData, Coord {
   key?: Key | null | undefined
-  size?: number
-  x: number
-  y: number
-  moveable?: boolean
+  moveable: boolean
   moveToFront: () => void
   reportRotation: () => void
   reportPosition: (coord: Coord) => void
@@ -46,8 +43,6 @@ export interface Position extends Coord {
   moveable?: boolean
 }
 
-export interface PiecePosition extends Position {
-  fill: Fill
-  tiles: GridStore
+export interface PiecePosition extends Position, PieceData {
   index: number
 }

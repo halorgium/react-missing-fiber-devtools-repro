@@ -6,7 +6,7 @@ import Tile from './Tile'
 import { PieceState } from './types'
 
 export interface PieceProps extends PieceState {
-  size?: number
+  size: number
   margin: number
 }
 

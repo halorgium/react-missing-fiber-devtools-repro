@@ -27,7 +27,7 @@ function Home(): JSX.Element {
 }
 
 interface WindowEvent {
-  target: { value: any }
+  target: { value: string }
 }
 
 function SelectedGame(): JSX.Element {
