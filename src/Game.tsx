@@ -1,5 +1,4 @@
 
-import { useState, useCallback } from 'react'
 import { Stage, Layer, Group } from 'react-konva'
 
 import Piece from './Piece'
@@ -16,13 +15,6 @@ interface GameProps {
 function Game({ tiles, initialPieces, initialPositions }: GameProps) {
   const size = 30
   const margin = 15
-
-  // <Debug />
-  const [counter, setCounter] = useState(0)
-  const increment = useCallback(() => {
-    setCounter(i => i + 1)
-  }, [])
-  // </Debug>
 
   const board = useBoardState(tiles, initialPieces, initialPositions)
 
@@ -51,7 +43,7 @@ function Game({ tiles, initialPieces, initialPositions }: GameProps) {
           </Board>
         </Group>
         <Group x={500} y={40}>
-          <Debug increment={increment} counter={counter} positions={board.positions} />
+          <Debug positions={board.positions} />
           <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
           </Group>
