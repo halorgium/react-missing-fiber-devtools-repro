@@ -8,7 +8,7 @@ export function parsePositions(input: string): Positions {
     }
 
     console.log(line)
-    const found = line.match(/^(?<piece>\w+) @ (?<x>\d+), (?<y>\d+) \((?<r>\d+)\)$/)
+    const found = line.match(/^(?<piece>\w+) +@ (?<x>\d+), (?<y>\d+) \((?<r>\d+)\)$/)
     console.log(found)
     if (found === null) {
       throw new Error(`line '${line}' does not match`)
@@ -26,8 +26,6 @@ export function parsePositions(input: string): Positions {
 
     result.set(found.groups['piece'], position)
   }
-
-  console.log(JSON.stringify(result))
 
   return result
 }

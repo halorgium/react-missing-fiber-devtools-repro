@@ -3,12 +3,21 @@ import { BoardData, GameName, PieceName, Position, Positions } from '../../types
 import { parsePositions } from './parsePositions'
 
 const dec30 = parsePositions(`
-red @ 0, 0 (3)
-green @ 0, 3 (2)
+red    @ 0, 0 (3)
+green  @ 0, 3 (2)
 yellow @ 3, 1 (0)
 orange @ 3, 3 (0)
-blue @ 0, 1 (3)
-pink @ 2, 0 (1)
+blue   @ 0, 1 (3)
+pink   @ 2, 0 (1)
+`)
+
+const dec30b = parsePositions(`
+red    @ 2, 3 (1)
+green  @ 2, 0 (0)
+yellow @ 0, 1 (2)
+orange @ 0, 0 (2)
+blue   @ 3, 1 (1)
+pink   @ 0, 2 (3)
 `)
 
 const unsolved = new Map<PieceName, Position>()
@@ -123,6 +132,7 @@ const positions = new Map<GameName, Positions>([
   ['partialHack', partialHack],
   ['unsolved', unsolved],
   ['2021-12-30', dec30],
+  ['2021-12-30b', dec30b],
 ])
 
 const width = 5
