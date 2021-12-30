@@ -1,5 +1,15 @@
 import { GridStore } from '../../GridMap'
 import { BoardData, GameName, PieceName, Position, Positions } from '../../types'
+import { parsePositions } from './parsePositions'
+
+const dec30 = parsePositions(`
+red @ 0, 0 (3)
+green @ 0, 3 (2)
+yellow @ 3, 1 (0)
+orange @ 3, 3 (0)
+blue @ 0, 1 (3)
+pink @ 2, 0 (1)
+`)
 
 const unsolved = new Map<PieceName, Position>()
 unsolved.set('red', {
@@ -112,6 +122,7 @@ const positions = new Map<GameName, Positions>([
   ['hack', hack],
   ['partialHack', partialHack],
   ['unsolved', unsolved],
+  ['2021-12-30', dec30],
 ])
 
 const width = 5
