@@ -7,7 +7,13 @@ import Board from './Board'
 import Debug from './Debug'
 import useBoardState from './useBoardState'
 
-function Game({ tiles, initialPieces, initialPositions }) {
+interface GameProps {
+  tiles: any
+  initialPieces: any
+  initialPositions: any
+}
+
+function Game({ tiles, initialPieces, initialPositions }: GameProps) {
   const size = 30
   const margin = 15
 
@@ -24,7 +30,7 @@ function Game({ tiles, initialPieces, initialPositions }) {
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
         <Group x={130} y={130}>
-          <Board tiles={tiles} size={size} margin={margin}>
+          <Board tiles={tiles} size={size} margin={margin} hits={null} border={0}>
             <Group>
               {board.pieces.map(piece => {
                 return <Piece
@@ -33,7 +39,8 @@ function Game({ tiles, initialPieces, initialPositions }) {
                   margin={margin}
                   tiles={piece.tiles}
                   fill={piece.fill}
-                  position={piece.position}
+                  x={piece.x}
+                  y={piece.y}
                   moveable={piece.moveable}
                   moveToFront={piece.moveToFront}
                   reportRotation={piece.reportRotation}

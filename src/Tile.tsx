@@ -1,6 +1,13 @@
 import { Rect } from 'react-konva'
 
-function Tile({ x, y, size, fill }) {
+interface TileProps {
+  x?: number
+  y?: number
+  size: number
+  fill: string
+}
+
+function Tile({ x = 0, y = 0, size, fill }: TileProps): JSX.Element {
   return (
     <Rect
       x={x}

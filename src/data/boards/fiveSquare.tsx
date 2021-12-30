@@ -1,6 +1,7 @@
-import GridMap from '../../GridMap'
+import { GridStore } from '../../GridMap'
+import { BoardData, GameName, PieceName, Position, Positions } from '../../types'
 
-const unsolved = new Map()
+const unsolved = new Map<PieceName, Position>()
 unsolved.set('red', {
   x: -2,
   y: 0,
@@ -32,7 +33,7 @@ unsolved.set('pink', {
   r: 0,
 })
 
-const online = new Map()
+const online = new Map<PieceName, Position>()
 online.set('red', {
   x: 0,
   y: 0,
@@ -64,7 +65,7 @@ online.set('pink', {
   r: 0,
 })
 
-const hack = new Map()
+const hack = new Map<PieceName, Position>()
 hack.set('red', {
   x: 0,
   y: 3,
@@ -96,17 +97,17 @@ hack.set('pink', {
   r: 1,
 })
 
-const partialHack = new Map(unsolved)
-partialHack.set('green', {
-  moveable: false,
-  ...hack.get('green'),
-})
-partialHack.set('orange', {
-  moveable: false,
-  ...hack.get('orange'),
-})
+const partialHack = new Map<PieceName, Position>(unsolved)
+// partialHack.set('green', {
+//   moveable: false,
+//   ...hack.get('green'),
+// })
+// partialHack.set('orange', {
+//   moveable: false,
+//   ...hack.get('orange'),
+// })
 
-const positions = new Map([
+const positions = new Map<GameName, Positions>([
   ['online', online],
   ['hack', hack],
   ['partialHack', partialHack],
@@ -115,13 +116,13 @@ const positions = new Map([
 
 const width = 5
 const height = 5
-const tiles = new GridMap()
+const tiles = new GridStore()
 for (let x = 0; x < width; ++x) {
   for (let y = 0; y < height; ++y) {
-    tiles.set(x, y, null)
+    tiles.set(x, y)
   }
 }
 
-const board = { tiles, positions }
+const board: BoardData = { tiles, positions }
 
 export default board

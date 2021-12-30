@@ -4,13 +4,20 @@ import Game from './Game'
 import pieces from './data/pieces'
 import debug from './data/boards/debug'
 import fiveSquare from './data/boards/fiveSquare'
+import { BoardData } from "./types"
 
-const boardLookup = {
-  debug,
-  fiveSquare,
+function boardLookup(name: string | undefined): BoardData | null {
+  switch (name) {
+    case 'debug':
+      return debug
+    case 'fiveSquare':
+      return fiveSquare
+    default:
+      return null
+  }
 }
 
-function Home() {
+function Home(): JSX.Element {
   return (
     <ul>
       <li><Link to="/fiveSquare/unsolved">Five by Five Square</Link></li>
@@ -19,7 +26,11 @@ function Home() {
   )
 }
 
-function SelectedGame() {
+interface WindowEvent {
+  target: { value: any }
+}
+
+function SelectedGame(): JSX.Element {
   const navigate = useNavigate()
 
   let { board, game } = useParams()
@@ -28,7 +39,7 @@ function SelectedGame() {
     game = "unsolved"
   }
 
-  const onGameSelect = function (event) {
+  const onGameSelect = function (event: WindowEvent) {
     const path = generatePath("/:board/:game", {
       board: board,
       game: event.target.value,
@@ -37,8 +48,18 @@ function SelectedGame() {
     navigate(path)
   }
 
-  const tiles = boardLookup[board].tiles
-  const positions = boardLookup[board].positions.get(game)
+  const boardData = boardLookup(board)
+
+  if (boardData === null) {
+    return <p>Board not found</p>
+  }
+
+  if (game === undefined) {
+    return <p>Game not found</p>
+  }
+
+  const tiles = boardData.tiles
+  const positions = boardData.positions.get(game)
 
   return (
     <>
@@ -51,7 +72,7 @@ function SelectedGame() {
   )
 }
 
-function App() {
+function App(): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
