@@ -4,8 +4,8 @@ import { BoardHits, Coord, PieceData, PieceName, PiecePosition, PiecePositions, 
 
 export interface BoardState {
   pieces: PieceState[]
+  positions: PiecePositions
   hits: BoardHits
-  statusReport: string
 }
 
 const swapMatrix = [
@@ -49,13 +49,11 @@ function rotate(coords: GridStore, rotation: Rotation): GridStore {
   return normalize(coords.map(transform))
 }
 
-function detectHits(tiles: GridStore, pieces: PiecePositions): [GridMap<PieceName[]>, string[]] {
+function detectHits(tiles: GridStore, pieces: PiecePositions): GridMap<PieceName[]> {
   const hits: BoardHits = tiles.mapValues((x, y) => [])
 
-  const lines = []
   for (let [k, piece] of pieces) {
     const { r, x, y } = piece
-    lines.push(`>>> ${k} @ ${x}, ${y} (${r})`)
 
     const tiles = rotate(piece.tiles, r)
     for (let [tileX, tileY] of tiles) {
@@ -68,12 +66,11 @@ function detectHits(tiles: GridStore, pieces: PiecePositions): [GridMap<PieceNam
     }
   }
 
-  return [hits, lines]
+  return hits
 }
 
 function useBoardState(tiles: GridStore, initialPieces: Map<PieceName, PieceData>, initialPositions: Positions): BoardState {
   const [boardHits, setBoardHits] = useState<BoardHits>(() => tiles.mapValues((x, y) => []))
-  const [statusReport, setStatusReport] = useState<string>('')
 
   const [index, setIndex] = useState<number>(0)
   const [pieces, setPieces] = useState<PiecePositions>(() => {
@@ -174,10 +171,9 @@ function useBoardState(tiles: GridStore, initialPieces: Map<PieceName, PieceData
   }, [pieces])
 
   useEffect(() => {
-    const [hits, lines] = detectHits(tiles, pieces)
+    const hits = detectHits(tiles, pieces)
 
     setBoardHits(hits)
-    setStatusReport(lines.join("\n"))
   }, [tiles, pieces])
 
   const orderedPieces = [...pieces.entries()].sort(([ka, pa], [kb, pb]) => pa.index - pb.index).map(([key, piece]) => {
@@ -195,8 +191,8 @@ function useBoardState(tiles: GridStore, initialPieces: Map<PieceName, PieceData
 
   return {
     pieces: orderedPieces,
+    positions: pieces,
     hits: boardHits,
-    statusReport,
   }
 }
 

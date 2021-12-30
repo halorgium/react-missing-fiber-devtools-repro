@@ -51,7 +51,7 @@ function Game({ tiles, initialPieces, initialPositions }: GameProps) {
           </Board>
         </Group>
         <Group x={500} y={40}>
-          <Debug increment={increment} counter={counter} statusReport={board.statusReport} />
+          <Debug increment={increment} counter={counter} positions={board.positions} />
           <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
           </Group>
