@@ -1,5 +1,5 @@
 import { Group, Text } from 'react-konva'
-import GridMap from './GridMap'
+import { GridStore } from './GridMap'
 
 import Tile from './Tile'
 import { BoardHits } from './types'
@@ -7,14 +7,14 @@ import { BoardHits } from './types'
 interface BoardProps {
   children?: JSX.Element | null
   hits?: BoardHits | null
-  tiles: GridMap<any>
+  tiles: GridStore
   size: number
   margin: number
-  border?: number
+  border: number
 }
 
-function Board({ children = null, hits = null, tiles, size, margin, border = 5 }: BoardProps): JSX.Element {
-  const board = tiles.mapValues((x, y, value) => {
+function Board({ children = null, hits = null, tiles, size, margin, border }: BoardProps): JSX.Element {
+  const board = tiles.mapValues((x, y) => {
     let fill = 'grey'
     let hit = null
     if (hits !== null) {

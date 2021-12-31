@@ -82,7 +82,7 @@ class GridStore {
     return newStore
   }
 
-  mapValues<U>(callback: (x: any, y: any) => U): GridMap<U> {
+  mapValues<U>(callback: (x: number, y: number) => U): GridMap<U> {
     return this.#underlying.mapValues((x, y) => callback(x, y))
   }
 

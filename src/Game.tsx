@@ -5,14 +5,16 @@ import Piece from './Piece'
 import Board from './Board'
 import Debug from './Debug'
 import useBoardState from './useBoardState'
+import { GridStore } from './GridMap'
+import { PieceData, PieceName, Positions } from './types'
 
 interface GameProps {
-  tiles: any
-  initialPieces: any
-  initialPositions: any
+  tiles: GridStore
+  initialPieces:  Map<PieceName, PieceData>
+  initialPositions: Positions
 }
 
-function Game({ tiles, initialPieces, initialPositions }: GameProps) {
+function Game({ tiles, initialPieces, initialPositions }: GameProps): JSX.Element {
   const size = 30
   const margin = 15
 

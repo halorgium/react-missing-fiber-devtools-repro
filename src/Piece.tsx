@@ -10,7 +10,7 @@ export interface PieceProps extends PieceState {
   margin: number
 }
 
-function Piece({ tiles, x: initialX, y: initialY, size = 50, margin, fill, moveable, moveToFront, reportRotation, reportPosition }: PieceProps) {
+function Piece({ tiles, x: initialX, y: initialY, size, margin, fill, moveable, moveToFront, reportRotation, reportPosition }: PieceProps): JSX.Element {
   const grid = size + margin
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

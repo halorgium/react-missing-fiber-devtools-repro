@@ -61,6 +61,10 @@ function SelectedGame(): JSX.Element {
   const tiles = boardData.tiles
   const positions = boardData.positions.get(game)
 
+  if (positions === undefined) {
+    return <p>Game not found</p>
+  }
+
   return (
     <>
       <select value={game} onChange={onGameSelect}>
