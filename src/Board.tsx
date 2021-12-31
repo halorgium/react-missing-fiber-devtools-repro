@@ -5,22 +5,22 @@ import Tile from './Tile'
 import { BoardHits } from './types'
 
 interface BoardProps {
-  children?: JSX.Element | null
-  hits?: BoardHits | null
+  children?: JSX.Element
+  hits?: BoardHits
   tiles: GridStore
   size: number
   margin: number
   border: number
 }
 
-function Board({ children = null, hits = null, tiles, size, margin, border }: BoardProps): JSX.Element {
+function Board({ children, hits, tiles, size, margin, border }: BoardProps): JSX.Element {
   const board = tiles.mapValues((x, y) => {
     let fill = 'grey'
-    let hit = null
-    if (hits !== null) {
+    let hit = undefined
+    if (hits !== undefined) {
       fill = 'orange'
       const h = hits.get(x, y)
-      if (h !== null) {
+      if (h !== undefined) {
         if (h.length === 1) {
           fill = 'green'
         }

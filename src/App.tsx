@@ -6,14 +6,14 @@ import debug from './data/boards/debug'
 import fiveSquare from './data/boards/fiveSquare'
 import { BoardData } from "./types"
 
-function boardLookup(name: string | undefined): BoardData | null {
+function boardLookup(name: string | undefined): BoardData | undefined {
   switch (name) {
     case 'debug':
       return debug
     case 'fiveSquare':
       return fiveSquare
     default:
-      return null
+      return undefined
   }
 }
 
@@ -35,7 +35,7 @@ function SelectedGame(): JSX.Element {
 
   let { board, game } = useParams()
   console.log({ board, game })
-  if (game === null) {
+  if (game === undefined) {
     game = "unsolved"
   }
 
@@ -50,7 +50,7 @@ function SelectedGame(): JSX.Element {
 
   const boardData = boardLookup(board)
 
-  if (boardData === null) {
+  if (boardData === undefined) {
     return <p>Board not found</p>
   }
 

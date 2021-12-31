@@ -6,17 +6,17 @@ class GridMap<T> {
     this.#rows = new Map()
   }
 
-  get(x: number, y: number): T | null {
+  get(x: number, y: number): T | undefined {
     const row = this.#rows.get(x)
-    if (row !== null && row !== undefined) {
+    if (row !== undefined) {
       return row.get(y)
     }
-    return null
+    return undefined
   }
 
   set(x: number, y: number, value: T): void {
     let row = this.#rows.get(x)
-    if (row === null || row === undefined) {
+    if (row === undefined) {
       row = new Map()
       this.#rows.set(x, row)
     }
@@ -63,13 +63,13 @@ class GridStore {
     return store
   }
 
-  #underlying: GridMap<null>
+  #underlying: GridMap<undefined>
   constructor() {
-    this.#underlying = new GridMap<null>()
+    this.#underlying = new GridMap<undefined>()
   }
   
   set(x: number, y: number) {
-    this.#underlying.set(x, y, null)
+    this.#underlying.set(x, y, undefined)
   }
 
   map(callback: (x: number, y: number) => [number, number]): GridStore {

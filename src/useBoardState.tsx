@@ -60,7 +60,7 @@ function detectHits(tiles: GridStore, pieces: PiecePositions): GridMap<PieceName
       const ax = x + tileX
       const ay = y + tileY
       const h = hits.get(ax, ay)
-      if (h !== null && h !== undefined) {
+      if (h !== undefined) {
         h.push(k)
       }
     }

@@ -24,7 +24,7 @@ function Game({ tiles, initialPieces, initialPositions }: GameProps): JSX.Elemen
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
         <Group x={130} y={130}>
-          <Board tiles={tiles} size={size} margin={margin} hits={null} border={0}>
+          <Board tiles={tiles} size={size} margin={margin} hits={undefined} border={0}>
             <Group>
               {board.pieces.map(piece => {
                 return <Piece
