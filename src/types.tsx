@@ -1,6 +1,10 @@
 import { Key } from "react";
 import GridMap, { GridStore } from "./GridMap";
 
+export interface WindowEvent {
+  target: { value: string }
+}
+
 export enum Rotation {
   Up = 0,
   Down,
@@ -8,6 +12,7 @@ export enum Rotation {
   Right,
 }
 
+export type BoardName = string
 export type GameName = string
 export type PieceName = string
 export type Fill = string

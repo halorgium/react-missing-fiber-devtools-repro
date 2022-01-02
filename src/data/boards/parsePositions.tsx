@@ -7,9 +7,8 @@ export function parsePositions(input: string): Positions {
       continue
     }
 
-    console.log(line)
     const found = line.match(/^(?<piece>\w+) +@ (?<x>\d+), (?<y>\d+) \((?<r>\d+)\)$/)
-    console.log(found)
+
     if (found === null) {
       throw new Error(`line '${line}' does not match`)
     }
