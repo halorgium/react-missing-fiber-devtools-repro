@@ -5,10 +5,12 @@ import boards from './data/boards'
 import { BoardData, BoardName, GameName, Positions, WindowEvent } from "./types"
 import { useCallback } from "react"
 
+type PathGenerator = (input: string) => string
+
 interface SelectorProps {
   selected: string
   options: string[]
-  pathGenerator: (input: string) => string
+  pathGenerator: PathGenerator
 }
 
 function Selector({ selected, options, pathGenerator }: SelectorProps): JSX.Element {
@@ -47,7 +49,7 @@ function useBoardAndGame(): [BoardName, GameName] {
 function SelectedGame(): JSX.Element {
   const [board, game] = useBoardAndGame()
 
-  const pathToBoard = useCallback<(board: string) => string>((board: string) => {
+  const pathToBoard = useCallback<PathGenerator>((board: string) => {
     if (board === "") {
       return "/"
     }
@@ -55,7 +57,7 @@ function SelectedGame(): JSX.Element {
     return generatePath("/:board", { board })
   }, [])
 
-  const pathToGame = useCallback<(game: string) => string>((game: string) => {
+  const pathToGame = useCallback<PathGenerator>((game: string) => {
     if (game === "") {
       return pathToBoard(board)
     }
