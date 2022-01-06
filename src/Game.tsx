@@ -7,14 +7,16 @@ import Debug from './Debug'
 import useBoardState from './useBoardState'
 import { GridStore } from './GridMap'
 import { PieceData, PieceName, Positions } from './types'
+import { SelectionDispatch } from './useSelectionReducer'
 
 interface GameProps {
   tiles: GridStore
   initialPieces:  Map<PieceName, PieceData>
   initialPositions: Positions
+  dispatch: SelectionDispatch
 }
 
-function Game({ tiles, initialPieces, initialPositions }: GameProps): JSX.Element {
+function Game({ tiles, initialPieces, initialPositions, dispatch }: GameProps): JSX.Element {
   const size = 30
   const margin = 15
 
@@ -45,7 +47,7 @@ function Game({ tiles, initialPieces, initialPositions }: GameProps): JSX.Elemen
           </Board>
         </Group>
         <Group x={500} y={40}>
-          <Debug positions={board.positions} />
+          <Debug positions={board.positions} dispatch={dispatch} />
           <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
           </Group>

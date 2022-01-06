@@ -8,11 +8,13 @@ export type SelectionDispatch = Dispatch<SelectionAction>
 export enum SelectionActionType {
   selectBoard,
   selectLayout,
+  savePositions,
 }
 
 interface SelectionAction {
   type: SelectionActionType
-  choice: string | null
+  choice?: string | null
+  positions?: Positions
 }
 
 interface SelectionBase {
@@ -31,6 +33,7 @@ export interface SelectionState extends SelectionBase {
   currentLayout: GameName | null
   layoutOptions: GameName[] | null
   game: GameState | null
+  positions: Positions | null
 }
 
 interface GameState {
@@ -43,6 +46,10 @@ interface GameState {
 function reducer(state: SelectionState, action: SelectionAction): SelectionState {
   switch (action.type) {
     case SelectionActionType.selectBoard:
+      if (action.choice === undefined) {
+        throw new Error("expected choice")
+      }
+
       if (state.currentBoard === action.choice) {
         return state
       }
@@ -71,6 +78,10 @@ function reducer(state: SelectionState, action: SelectionAction): SelectionState
         game: null,
       }
     case SelectionActionType.selectLayout:
+      if (action.choice === undefined) {
+        throw new Error("expected choice")
+      }
+
       if (state.currentLayout === action.choice) {
         return state
       }
@@ -111,6 +122,17 @@ function reducer(state: SelectionState, action: SelectionAction): SelectionState
           positions: positions,
         },
       }
+    case SelectionActionType.savePositions:
+      if (action.positions === undefined) {
+        throw new Error("expected positions")
+      }
+
+      console.log(action.positions)
+
+      return {
+        ...state,
+        positions: action.positions,
+      }
     default:
       throw new Error('unknown action');
   }
@@ -125,6 +147,7 @@ function init({ pieces, boards, initialBoard, initialLayout }: SelectionInit): S
     currentLayout: null,
     layoutOptions: null,
     game: null,
+    positions: null,
   }
 
   const selectBoardState = reducer(initialState, { type: SelectionActionType.selectBoard, choice: initialBoard })

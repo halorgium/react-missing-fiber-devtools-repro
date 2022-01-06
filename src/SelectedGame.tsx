@@ -2,10 +2,12 @@ import { useParams, useNavigate, generatePath } from "react-router-dom"
 import Game from './Game'
 import allPieces from './data/pieces'
 import allBoards from './data/boards'
-import { BoardData, BoardName, GameName, PieceData, PieceName } from "./types"
-import { useEffect } from "react"
+import { BoardData, BoardName, GameName, PieceData, PieceName, Positions } from "./types"
+import { useEffect, useState } from "react"
 import useSelectionReducer, { SelectionActionType, SelectionDispatch, SelectionState } from "./useSelectionReducer"
 import Selector from "./Selector"
+import { buildLayoutText } from "./Debug"
+import CopyToClipboard from "react-copy-to-clipboard"
 
 function useBoardAndGame(): [BoardName | null, GameName | null] {
   let { board, game } = useParams()
@@ -40,9 +42,37 @@ function useSelection(pieces: Map<PieceName, PieceData>, boards: Map<BoardName, 
     }
   }, [navigate, state.currentBoard, state.currentLayout])
 
-  console.log(JSON.stringify(state))
+  if (state.positions === null) {
+    console.log(`positions: null`)
+  } else {
+    console.log(`positions: ${JSON.stringify(Array.from(state.positions.entries()))}`)
+  }
 
   return [state, dispatch]
+}
+
+interface CopyLayoutProps {
+  positions: Positions
+}
+
+function CopyLayout({ positions }: CopyLayoutProps): JSX.Element {
+  const layoutText = buildLayoutText(positions)
+
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    if (copied) {
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
+    }
+  }, [copied])
+
+  return (
+    <CopyToClipboard text={layoutText} onCopy={() => setCopied(true)}>
+      {copied ? <button disabled={true}>Copied Layout</button> : <button>Copy Layout</button>}
+    </CopyToClipboard>
+  )
 }
 
 function SelectedGame(): JSX.Element {
@@ -52,7 +82,8 @@ function SelectedGame(): JSX.Element {
     <>
       {state.boardOptions && <Selector current={state.currentBoard} options={state.boardOptions} actionType={SelectionActionType.selectBoard} dispatch={dispatch} />}
       {state.layoutOptions && <Selector current={state.currentLayout} options={state.layoutOptions} actionType={SelectionActionType.selectLayout} dispatch={dispatch} />}
-      {state.game && <Game key={state.game.layout} tiles={state.game.tiles} initialPieces={state.game.pieces} initialPositions={state.game.positions} />}
+      {state.positions && <CopyLayout positions={state.positions} />}
+      {state.game && <Game key={state.game.layout} tiles={state.game.tiles} initialPieces={state.game.pieces} initialPositions={state.game.positions} dispatch={dispatch} />}
     </>
   )
 }
