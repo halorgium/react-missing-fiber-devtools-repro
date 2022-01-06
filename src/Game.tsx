@@ -7,7 +7,8 @@ import Debug from './Debug'
 import useBoardState from './useBoardState'
 import { GridStore } from './GridMap'
 import { PieceData, PieceName, Positions } from './types'
-import { SelectionDispatch } from './useSelectionReducer'
+import { SelectionActionType, SelectionDispatch } from './useSelectionReducer'
+import { useEffect } from 'react'
 
 interface GameProps {
   tiles: GridStore
@@ -21,6 +22,13 @@ function Game({ tiles, initialPieces, initialPositions, dispatch }: GameProps): 
   const margin = 15
 
   const board = useBoardState(tiles, initialPieces, initialPositions)
+
+  useEffect(() => {
+    dispatch({
+      type: SelectionActionType.savePositions,
+      positions: board.positions,
+    })
+  }, [dispatch, board.positions])
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
@@ -47,7 +55,7 @@ function Game({ tiles, initialPieces, initialPositions, dispatch }: GameProps): 
           </Board>
         </Group>
         <Group x={500} y={40}>
-          <Debug positions={board.positions} dispatch={dispatch} />
+          <Debug positions={board.positions} />
           <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
           </Group>

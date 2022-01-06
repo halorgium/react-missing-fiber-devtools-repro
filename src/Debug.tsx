@@ -1,10 +1,8 @@
-import { Rect, Text } from 'react-konva'
-import { PieceName, PiecePositions, Position, Positions } from './types'
-import { SelectionActionType, SelectionDispatch } from './useSelectionReducer'
+import { Text } from 'react-konva'
+import { Positions } from './types'
 
 interface DebugProps {
-  positions: PiecePositions
-  dispatch: SelectionDispatch
+  positions: Positions
 }
 
 export function buildLayoutText(positions: Positions): string {
@@ -15,27 +13,12 @@ export function buildLayoutText(positions: Positions): string {
   return lines.join("\n")
 }
 
-function Debug({ positions, dispatch }: DebugProps): JSX.Element {
-  const map = new Map<PieceName, Position>();
-
-  for (let [piece, { x, y, r }] of positions) {
-    map.set(piece, { x, y, r })
-  }
-
-  const layoutText = buildLayoutText(map)
-
-  function savePositions() {
-    console.log("yup")
-    dispatch({
-      type: SelectionActionType.savePositions,
-      positions: map,
-    })
-  }
+function Debug({ positions }: DebugProps): JSX.Element {
+  const layoutText = buildLayoutText(positions)
 
   return (
     <>
-      <Rect width={70} height={30} fill='red' onClick={savePositions} />
-      <Text y={30} fontFamily='Courier' text={layoutText} />
+      <Text fontFamily='Courier' text={layoutText} />
     </>
   )
 }
