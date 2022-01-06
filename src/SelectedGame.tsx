@@ -3,10 +3,8 @@ import Game from './Game'
 import allPieces from './data/pieces'
 import allBoards from './data/boards'
 import { BoardData, BoardName, GameName, PieceData, PieceName, Positions, WindowEvent } from "./types"
-import { Reducer, useCallback, useReducer } from "react"
+import { Reducer, useCallback, useEffect, useReducer } from "react"
 import { GridStore } from "./GridMap"
-
-type PathGenerator = (input: string) => string
 
 interface SelectorProps {
   current: string | null
@@ -31,17 +29,17 @@ function Selector({ current, options, actionType, dispatch }: SelectorProps): JS
   )
 }
 
-function useBoardAndGame(): [BoardName, GameName] {
+function useBoardAndGame(): [BoardName | null, GameName | null] {
   let { board, game } = useParams()
 
   console.log({ board, game })
 
   if (board === undefined) {
-    return ["", ""]
+    return [null, null]
   }
 
   if (game === undefined) {
-    return [board, ""]
+    return [board, null]
   }
 
   return [board, game]
@@ -59,11 +57,21 @@ interface SelectionAction {
   choice: string | null
 }
 
-interface SelectionState extends SelectionInit {
-  currentBoard: string | null
-  boardOptions: string[]
-  currentLayout: string | null
-  layoutOptions: string[] | null
+interface SelectionInit extends SelectionBase {
+  boardParam: BoardName | null
+  layoutParam: GameName | null
+}
+
+interface SelectionBase {
+  pieces: Map<PieceName, PieceData>
+  boards: Map<BoardName, BoardData>
+}
+
+interface SelectionState extends SelectionBase {
+  currentBoard: BoardName | null
+  boardOptions: BoardName[]
+  currentLayout: GameName | null
+  layoutOptions: GameName[] | null
   game: GameState | null
 }
 
@@ -150,8 +158,8 @@ function reducer(state: SelectionState, action: SelectionAction): SelectionState
   }
 }
 
-function init({ pieces, boards }: SelectionInit): SelectionState {
-  return {
+function init({ pieces, boards, boardParam, layoutParam }: SelectionInit): SelectionState {
+  const initialState = {
     pieces,
     boards,
     currentBoard: null,
@@ -160,58 +168,33 @@ function init({ pieces, boards }: SelectionInit): SelectionState {
     layoutOptions: null,
     game: null,
   }
-}
 
-interface SelectionInit {
-  pieces: Map<PieceName, PieceData>
-  boards: Map<BoardName, BoardData>
+  const selectBoardState = reducer(initialState, { type: SelectionActionType.selectBoard, choice: boardParam })
+  return reducer(selectBoardState, { type: SelectionActionType.selectLayout, choice: layoutParam })
 }
 
 function useSelection(pieces: Map<PieceName, PieceData>, boards: Map<BoardName, BoardData>): [SelectionState, React.Dispatch<SelectionAction>] {
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
+
+  const [boardParam, layoutParam] = useBoardAndGame()
 
   const [state, dispatch] = useReducer<SelectionReducer, SelectionInit>(
     reducer,
-    { pieces, boards },
+    { pieces, boards, boardParam, layoutParam },
     init
   )
 
+  useEffect(() => {
+    if (state.currentBoard === null) {
+      navigate("/")
+    } else if (state.currentLayout === null) {
+      navigate(generatePath("/:board", { board: state.currentBoard }))
+    } else {
+      navigate(generatePath("/:board/:game", { board: state.currentBoard, game: state.currentLayout }))
+    }
+  }, [navigate, state.currentBoard, state.currentLayout])
+
   console.log(JSON.stringify(state))
-
-  /*
-  const [board, layout] = useBoardAndGame()
-
-  const pathToBoard = useCallback<PathGenerator>((board: string) => {
-    if (board === "") {
-      return "/"
-    }
-
-    return generatePath("/:board", { board })
-  }, [])
-
-  const pathToGame = useCallback<PathGenerator>((game: string) => {
-    if (game === "") {
-      return pathToBoard(board)
-    }
-
-    return generatePath("/:board/:game", { board, game })
-  }, [board, pathToBoard])
-
-  let boardData: BoardData | undefined
-  let positions: Positions | undefined
-
-  if (board !== undefined) {
-    boardData = boards.get(board)
-
-    if (boardData !== undefined && game !== undefined) {
-      positions = boardData.positions.get(game)
-    }
-  }
-
-  // selected={board.current} options={Array.from(boards.keys())} pathGenerator={pathToBoard} 
-  // selected={game} options={Array.from(boardData.positions.keys())} pathGenerator={pathToGame}
-
-  */
 
   return [state, dispatch]
 }
