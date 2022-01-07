@@ -83,7 +83,7 @@ function SelectedGame(): JSX.Element {
       {state.boardOptions && <Selector current={state.currentBoard} options={state.boardOptions} actionType={SelectionActionType.selectBoard} dispatch={dispatch} />}
       {state.layoutOptions && <Selector current={state.currentLayout} options={state.layoutOptions} actionType={SelectionActionType.selectLayout} dispatch={dispatch} />}
       {state.positions && <CopyLayout positions={state.positions} />}
-      {state.game && <Game key={state.game.layout} tiles={state.game.tiles} initialPieces={state.game.pieces} initialPositions={state.game.positions} dispatch={dispatch} />}
+      {/* {state.game && <Game key={state.game.layout} tiles={state.game.tiles} initialPieces={state.game.pieces} initialPositions={state.game.positions} dispatch={dispatch} />} */}
     </>
   )
 }

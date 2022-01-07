@@ -1,39 +1,68 @@
 
-import { Stage, Layer, Group } from 'react-konva'
+import { Stage, Layer, Group, Text } from 'react-konva'
 
 import Piece from './Piece'
 import Board from './Board'
-import Debug from './Debug'
 import useBoardState from './useBoardState'
 import { GridStore } from './GridMap'
 import { PieceData, PieceName, Positions } from './types'
 import { SelectionActionType, SelectionDispatch } from './useSelectionReducer'
 import { useEffect } from 'react'
 
+import debug from './data/boards/debug'
+
 interface GameProps {
-  tiles: GridStore
-  initialPieces:  Map<PieceName, PieceData>
-  initialPositions: Positions
-  dispatch: SelectionDispatch
+  // tiles: GridStore
+  // initialPieces:  Map<PieceName, PieceData>
+  // initialPositions: Positions
+  // dispatch: SelectionDispatch
 }
 
-function Game({ tiles, initialPieces, initialPositions, dispatch }: GameProps): JSX.Element {
-  const size = 30
-  const margin = 15
+interface DebugProps {
+  positions: Positions
+}
 
-  const board = useBoardState(tiles, initialPieces, initialPositions)
+export function buildLayoutText(positions: Positions): string {
+  const lines = []
+  for (let [piece, { x, y, r }] of positions) {
+    lines.push(`${piece} @ ${x}, ${y} (${r})`)
+  }
+  return lines.join("\n")
+}
 
-  useEffect(() => {
-    dispatch({
-      type: SelectionActionType.savePositions,
-      positions: board.positions,
-    })
-  }, [dispatch, board.positions])
+function Debug({ positions }: DebugProps): JSX.Element {
+  const layoutText = buildLayoutText(positions)
+
+  return (
+    <>
+      <Text fontFamily='Courier' text={layoutText} />
+    </>
+  )
+}
+
+function Game(): JSX.Element {
+  // const size = 30
+  // const margin = 15
+
+  // const board = useBoardState(tiles, initialPieces, initialPositions)
+
+  // useEffect(() => {
+  //   dispatch({
+  //     type: SelectionActionType.savePositions,
+  //     positions: board.positions,
+  //   })
+  // }, [dispatch, board.positions])
+
+  const positions = debug.positions.get('unsolved')
+
+  if (positions === undefined) {
+    throw new Error("nope")
+  }
 
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Group x={130} y={130}>
+        {/* <Group x={130} y={130}>
           <Board tiles={tiles} size={size} margin={margin} hits={undefined} border={0}>
             <Group>
               {board.pieces.map(piece => {
@@ -53,12 +82,12 @@ function Game({ tiles, initialPieces, initialPositions, dispatch }: GameProps): 
               })}
             </Group>
           </Board>
-        </Group>
+        </Group> */}
         <Group x={500} y={40}>
-          <Debug positions={board.positions} />
-          <Group y={250}>
+          <Debug positions={positions} />
+          {/* <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
-          </Group>
+          </Group> */}
         </Group>
       </Layer>
     </Stage>
