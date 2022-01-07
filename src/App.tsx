@@ -1,9 +1,27 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-
 import { Stage, Layer, Group, Text } from 'react-konva'
+import { PieceName, Position, Positions } from './types'
 
-import positions from './data/boards/debug'
-import { Positions } from "./types"
+const unsolved = new Map<PieceName, Position>()
+unsolved.set('red1', {
+  x: 2,
+  y: -1,
+  r: 0,
+})
+unsolved.set('green1', {
+  x: -1,
+  y: -1,
+  r: 0,
+})
+unsolved.set('yellow1', {
+  x: 2,
+  y: 2,
+  r: 0,
+})
+unsolved.set('blue1', {
+  x: -1,
+  y: 2,
+  r: 0,
+})
 
 interface GameProps {
   // tiles: GridStore
@@ -25,7 +43,7 @@ export function buildLayoutText(positions: Positions): string {
 }
 
 function Debug({ positions }: DebugProps): JSX.Element {
-  const layoutText = buildLayoutText(positions)
+  const layoutText = buildLayoutText(unsolved)
 
   return (
     <>
@@ -47,7 +65,7 @@ function Game(): JSX.Element {
   //   })
   // }, [dispatch, board.positions])
 
-  if (positions === undefined) {
+  if (unsolved === undefined) {
     throw new Error("nope")
   }
 
@@ -76,7 +94,7 @@ function Game(): JSX.Element {
           </Board>
         </Group> */}
         <Group x={500} y={40}>
-          <Debug positions={positions} />
+          <Debug positions={unsolved} />
           {/* <Group y={250}>
             <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
           </Group> */}
