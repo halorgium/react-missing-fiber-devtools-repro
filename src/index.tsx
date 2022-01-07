@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 
 import { Stage, Layer, Text } from 'react-konva'
 
-function Debug(): JSX.Element {
+function Component3(): JSX.Element {
   return (
     <>
       <Text fontFamily='Courier' text='foo' />
@@ -11,25 +11,25 @@ function Debug(): JSX.Element {
   )
 }
 
-function Game(): JSX.Element {
+function Component2(): JSX.Element {
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        <Debug />
+        <Component3 />
       </Layer>
     </Stage>
   )
 }
 
-function App(): JSX.Element {
+function Component1(): JSX.Element {
   return (
-    <Game />
+    <Component2 />
   )
 }
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Component1 />
   </React.StrictMode>,
   document.getElementById('root')
 )
