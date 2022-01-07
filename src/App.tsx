@@ -42,7 +42,7 @@ export function buildLayoutText(positions: Positions): string {
   return lines.join("\n")
 }
 
-function Debug({ positions }: DebugProps): JSX.Element {
+function Debug(): JSX.Element {
   const layoutText = buildLayoutText(unsolved)
 
   return (
@@ -53,52 +53,10 @@ function Debug({ positions }: DebugProps): JSX.Element {
 }
 
 function Game(): JSX.Element {
-  // const size = 30
-  // const margin = 15
-
-  // const board = useBoardState(tiles, initialPieces, initialPositions)
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: SelectionActionType.savePositions,
-  //     positions: board.positions,
-  //   })
-  // }, [dispatch, board.positions])
-
-  if (unsolved === undefined) {
-    throw new Error("nope")
-  }
-
   return (
     <Stage width={window.innerWidth} height={window.innerHeight}>
       <Layer>
-        {/* <Group x={130} y={130}>
-          <Board tiles={tiles} size={size} margin={margin} hits={undefined} border={0}>
-            <Group>
-              {board.pieces.map(piece => {
-                return <Piece
-                  key={piece.key}
-                  size={size}
-                  margin={margin}
-                  tiles={piece.tiles}
-                  fill={piece.fill}
-                  x={piece.x}
-                  y={piece.y}
-                  moveable={piece.moveable}
-                  moveToFront={piece.moveToFront}
-                  reportRotation={piece.reportRotation}
-                  reportPosition={piece.reportPosition}
-                />
-              })}
-            </Group>
-          </Board>
-        </Group> */}
-        <Group x={500} y={40}>
-          <Debug positions={unsolved} />
-          {/* <Group y={250}>
-            <Board tiles={tiles} size={20} margin={5} border={1} hits={board.hits} />
-          </Group> */}
-        </Group>
+        <Debug />
       </Layer>
     </Stage>
   )
@@ -107,14 +65,6 @@ function Game(): JSX.Element {
 function App(): JSX.Element {
   return (
     <Game />
-    // <BrowserRouter>
-    //   <Routes>
-    //     <Route path="/:board/:game" element={<SelectedGame />} />
-    //     <Route path="/:board" element={<SelectedGame />} />
-    //     <Route path="/" element={<SelectedGame />} />
-    //     <Route path="*" element={<Navigate to="/" replace={true} />} />
-    //   </Routes>
-    // </BrowserRouter>
   )
 }
 
