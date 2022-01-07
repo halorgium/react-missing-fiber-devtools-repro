@@ -1,18 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
-import SelectedGame from "./SelectedGame"
-
 import { Stage, Layer, Group, Text } from 'react-konva'
 
-import Piece from './Piece'
-import Board from './Board'
-import useBoardState from './useBoardState'
-import { GridStore } from './GridMap'
-import { PieceData, PieceName, Positions } from './types'
-import { SelectionActionType, SelectionDispatch } from './useSelectionReducer'
-import { useEffect } from 'react'
-
-import debug from './data/boards/debug'
+import positions from './data/boards/debug'
+import { Positions } from "./types"
 
 interface GameProps {
   // tiles: GridStore
@@ -55,8 +46,6 @@ function Game(): JSX.Element {
   //     positions: board.positions,
   //   })
   // }, [dispatch, board.positions])
-
-  const positions = debug.positions.get('unsolved')
 
   if (positions === undefined) {
     throw new Error("nope")
